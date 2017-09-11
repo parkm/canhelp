@@ -30,8 +30,9 @@ module CanhelpPlugin
     assignments.each do |assignment|
       assignment_id = assignment['id']
       user_ids.each do |user_id|
-        result = grade_submission(token, canvas_course_url, assignment_id, user_id, '1')
-        puts "graded #{assignment_id} for #{user_id} - #{result}"
+        score = rand(assignment['points_possible'])
+        result = grade_submission(token, canvas_course_url, assignment_id, user_id, score)
+        puts "graded assignment (#{assignment_id}) #{score} points, for user (#{user_id}) - #{result}"
       end
     end
   end
