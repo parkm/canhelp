@@ -3,6 +3,6 @@ A Canvas API helper that contains scripts and assists in creating scripts for ve
 
 ```
 bundle install
-ruby canhelp.rb set_token YOUR_CANVAS_TOKEN
-ruby canhelp.rb PLUGIN_METHOD_NAME
+ruby canhelp.rb set_token <canvas_token>
+ruby canhelp.rb <plugin_method_name> <param>
 ```
