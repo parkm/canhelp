@@ -28,4 +28,20 @@ module Canhelp
     end
     return all_items
   end
+
+  def canvas_post(url, token, json_body)
+    uri = URI(url)
+
+    headers = {
+      'Content-Type' => 'application/json',
+      'Authorization' => "Bearer #{token}"
+    }
+
+    req = Net::HTTP::Post.new(uri.path, headers)
+    req.body = json_body.to_json
+
+    http = Net::HTTP.new(uri.hostname, uri.port)
+    http.use_ssl = true
+    http.request(req)
+  end
 end
