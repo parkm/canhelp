@@ -3,19 +3,11 @@ module CanhelpPlugin
   include Canhelp
 
   def grade_submission(token, canvas_course_url, assignment_id, user_id, grade)
-    uri = URI("#{canvas_course_url}/assignments/#{assignment_id}/submissions/#{user_id}")
-    req = Net::HTTP::Put.new(uri)
-    req['Content-Type'] = 'application/json'
-    req['Authorization'] = "Bearer #{token}"
-    req.body = ({
+    canvas_put("#{canvas_course_url}/assignments/#{assignment_id}/submissions/#{user_id}", token, {
       submission: {
         posted_grade: grade
       }
-    }).to_json
-
-    http = Net::HTTP.new(uri.hostname, uri.port)
-    http.use_ssl = true
-    res = http.request(req)
+    })
   end
 
   def self.grade_all_users_in_course(canvas_course_url)

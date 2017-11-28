@@ -40,8 +40,22 @@ module Canhelp
     req = Net::HTTP::Post.new(uri.path, headers)
     req.body = json_body.to_json
 
+    execute_http_request(uri, req)
+  end
+
+  def canvas_put(url, token, json_body)
+    uri = URI(url)
+    req = Net::HTTP::Put.new(uri)
+    req['Content-Type'] = 'application/json'
+    req['Authorization'] = "Bearer #{token}"
+    req.body = json_body.to_json
+
+    execute_http_request(uri, req)
+  end
+
+  def execute_http_request(uri, request)
     http = Net::HTTP.new(uri.hostname, uri.port)
     http.use_ssl = true
-    http.request(req)
+    http.request(request)
   end
 end
