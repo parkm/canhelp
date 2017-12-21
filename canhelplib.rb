@@ -69,8 +69,8 @@ module Canhelp
     http.request(request)
   end
 
-  def prompt(type)
-    puts "Enter a #{type.to_s}"
+  def prompt(value)
+    puts "Enter a #{value.to_s}"
     print "> "
     $stdin.gets.chomp ""
   end
