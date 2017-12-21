@@ -53,9 +53,26 @@ module Canhelp
     execute_http_request(uri, req)
   end
 
+  def canvas_delete(url, token, json_body)
+    uri = URI(url)
+    req = Net::HTTP::Delete.new(uri)
+    req['Content-Type'] = 'application/json'
+    req['Authorization'] = "Bearer #{token}"
+    req.body = json_body.to_json
+
+    execute_http_request(uri, req)
+  end
+
   def execute_http_request(uri, request)
     http = Net::HTTP.new(uri.hostname, uri.port)
     http.use_ssl = true
     http.request(request)
   end
+
+  def prompt(type)
+    puts "Enter a #{type.to_s}"
+    print "> "
+    $stdin.gets.chomp ""
+  end
+
 end
