@@ -18,4 +18,4 @@ if options[:plugin]
   CanhelpPlugin.send(options[:plugin], *args)
 end
 
-puts options
+#puts options
