@@ -2,15 +2,19 @@ require './canhelplib'
 module CanhelpPlugin
   include Canhelp
 
-  def grade_submission(token, subdomain, course_id, assignment_id, user_id, grade)
+  def create_submission(token, subdomain, course_id, assignment_id, user_id)
     canvas_url = "https://#{subdomain}.instructure.com"
-    canvas_put("#{canvas_url}/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions/#{user_id}", token, {
+    canvas_post("#{canvas_url}/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions", token,
+      {
+      as_user_id: "#{user_id}",
       submission: {
-        posted_grade: grade
+        submission_type: "online_text_entry",
+        body: "This is my submission - YAY!"
       }
     })
   end
-  def self.grade_all_users_in_course(
+
+  def self.student_submission(
     subdomain = prompt(:subdomain),
     course_id = prompt(:course_id),
     assignment_id = prompt(:assignment_id)
@@ -28,17 +32,15 @@ module CanhelpPlugin
       assignments.each do |assignment|
         assignment_id = assignment['id']
         user_ids.each do |user_id|
-          score = rand(10) + 1
-          result = grade_submission(token, subdomain, course_id, assignment_id, user_id, score)
-          puts "User #{user_id} grade for Assignment #{assignment_id}: #{score}"
+          result = create_submission(token, subdomain, course_id, assignment_id, user_id)
+          puts "user #{user_id} submitted to assignment #{assignment_id}"
         end
       end
 
     else
       user_ids.each do |user_id|
-        score = rand(10) + 1
-        result = grade_submission(token, subdomain, course_id, assignment_id, user_id, score)
-        puts "User #{user_id} Grade for Assignment #{assignment_id}: #{score}"
+        result = create_submission(token, subdomain, course_id, assignment_id, user_id)
+        puts "user #{user_id} submitted to assignment #{assignment_id}"
       end
     end
   end
