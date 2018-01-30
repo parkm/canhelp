@@ -11,7 +11,7 @@ module Actions
   # delete using url, token, json body
 
   def update_enrollment(subdomain, course_id, enrollment_id, state)
-    canvas_url = "https://#{subdomain}.instructure.com"
+    canvas_url = canvas_url = "https://#{subdomain}.instructure.com"
     token = get_token
 
     canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}", token,
@@ -63,6 +63,7 @@ module Actions
         user: {
           name: "#{name}",
           short_name: "#{name}",
+          sortable_name: "#{name}",
           terms_of_use: true,
           skip_registration: true
         },

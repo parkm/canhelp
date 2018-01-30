@@ -3,3 +3,4 @@ source "https://rubygems.org"
 
 gem "pry"
 gem "json", "~> 2.1"
+gem "faker"

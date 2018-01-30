@@ -4,9 +4,9 @@ require 'securerandom'
 module CanhelpPlugin
   include Canhelp
 
-  def self.create_courses(
+  def self.create_assignments(
     subdomain = prompt(:subdomain),
-    account_id = prompt(:account_id),
+    course_id = prompt(:course_id),
     count = prompt(:count),
     prefix = prompt(:prefix)
   )
@@ -17,14 +17,19 @@ module CanhelpPlugin
     checkmark = "\u2713"
 
     count.to_i.times do
-      response = canvas_post("#{canvas_url_api}/accounts/#{account_id}/courses", token, {
-        course: {
+      response = canvas_post("#{canvas_url_api}/courses/#{course_id}/assignments", token, {
+        assignment: {
           name: "#{prefix} #{current_count}",
-          course_code: "#{prefix} Course Code #{current_count}",
-          sis_course_id: "#{prefix}_sis_#{current_count}"
-        },
-        offer: true,
-        enroll_me: false
+          submission_types: [
+            "online_upload",
+            "online_text_entry",
+            "online_url",
+            "media_recording"
+          ],
+          points_possible: 10,
+          grading_type:"points",
+          published:true,
+        }
       })
 
       current_count += 1
@@ -33,7 +38,7 @@ module CanhelpPlugin
         print "#{checkmark}"
       else
         failures << response
-        print "Failed to create course(s)."
+        print "Failed to create assignment(s)."
         puts "\n"
       end
 
@@ -48,7 +53,7 @@ module CanhelpPlugin
         }
       else
         puts "\n"
-        puts "Created #{count} course(s) in account #{account_id}."
+        puts "Created #{count} asssignment(s) in course #{course_id}."
         puts "\n"
       end
 
