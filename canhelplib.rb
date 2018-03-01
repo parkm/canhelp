@@ -1,6 +1,7 @@
 require 'net/http'
 require 'pry'
 require 'json'
+require 'faraday'
 
 module Canhelp
   def get_token
@@ -8,15 +9,10 @@ module Canhelp
   end
 
   def get_json(token, url)
-    uri = URI(url)
-    req = Net::HTTP::Get.new(uri)
-    req['Authorization'] = "Bearer #{token}"
-
-    http = Net::HTTP.new(uri.hostname, uri.port)
-    http.use_ssl = true
-    res = http.request(req)
-
-    JSON.parse(res.body)
+    conn = Faraday.new(url)
+    conn.authorization :Bearer, token
+    conn.adapter Faraday.default_adapter
+    JSON.parse(conn.get.body)
   end
 
   def get_json_paginated(token, url)
