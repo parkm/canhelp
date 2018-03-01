@@ -54,34 +54,14 @@ module CanhelpPlugin
 
     end
 
-      created_user_id.each do |u|
-        enrollment_list << create_enrollment(subdomain, course_id, u, type, active_state, self_enroll)
-
+    if user_id.empty?
+      created_user.each do |u|
+        #random_state = ['active', 'invited', 'inactive'].sample(1)
+        create_enrollments(subdomain, course_id, u, type, state, self_enroll)
       end
-
-      print "Setting enrollment(s) to #{state}..."
-      enrollment_list.each do |e|
-        update_enrollment(subdomain, e['course_id'], e['id'], state)
-        print "."
-      end
-      puts "\nDone."
-
-    elsif state.empty? || user_id.empty?
-      created_user_id = create_user(subdomain, prefix, count)
-      created_user_id.each do |u|
-        create_enrollment(subdomain, course_id, u, type, state="active", self_enroll)
-      end
-      puts "Done."
-
     else
-      created_user_id = create_user(subdomain, prefix, count)
-      created_user_id.each do |u|
-        create_enrollment(subdomain, course_id, u, type, state="active", self_enroll)
-      end
-      puts "Done."
-
+      create_enrollments(subdomain, course_id, user_id, type, state, self_enroll)
     end
 
   end
-
 end
