@@ -55,12 +55,12 @@ module CanhelpPlugin
     end
 
     if user_id.empty?
-      created_user.each do |u|
+      created_user_id.each do |u|
         #random_state = ['active', 'invited', 'inactive'].sample(1)
-        create_enrollments(subdomain, course_id, u, type, state, self_enroll)
+        create_enrollment(subdomain, course_id, u, type, state, self_enroll)
       end
     else
-      create_enrollments(subdomain, course_id, user_id, type, state, self_enroll)
+      create_enrollment(subdomain, course_id, user_id, type, state, self_enroll)
     end
 
   end
