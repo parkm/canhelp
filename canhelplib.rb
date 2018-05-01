@@ -15,10 +15,10 @@ module Canhelp
     JSON.parse(conn.get.body)
   end
 
-  def get_json_paginated(token, url)
+  def get_json_paginated(token, url, parameters='')
     all_items = []
     page = 1
-    while (!(items_on_page = get_json(token, "#{url}?recursive=true&per_page=100&page=#{page}")).empty?)
+    while (!(items_on_page = get_json(token, "#{url}?recursive=true&per_page=100&page=#{page}&#{parameters}")).empty?)
       all_items += items_on_page
       page += 1
     end
