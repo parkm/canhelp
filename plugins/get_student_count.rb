@@ -1,10 +1,9 @@
 require './canhelplib'
-require 'csv'
 
 module CanhelpPlugin
   include Canhelp
 
-  def self.get_teacher_count(canvas_url, account_id)
+  def self.get_student_count(canvas_url, account_id)
     token = get_token
     subaccount_ids = get_json_paginated(token, "#{canvas_url}/api/v1/accounts/#{account_id}/sub_accounts", "recursive=true").map{|s| s['id']}
     subaccount_ids << account_id
@@ -15,13 +14,13 @@ module CanhelpPlugin
       puts "- #{subaccount}"
     end
 
-    all_teacher_enrollments = []
+    all_student_enrollments = []
 
     subaccount_ids.each do |subaccount_id|
       courses = get_json_paginated(
       token,
       "#{canvas_url}/api/v1/accounts/#{subaccount_id}/courses",
-      "include[]=teachers&include[]=total_students&state[]=available&state[]=claimed&state[]=created&state[]=completed",
+      "include[]=total_students&include[]=teachers&state[]=created&state[]=claimed&state[]=available&state[]=completed&published=true"
       )
 
       courses.each do |course|
@@ -29,7 +28,7 @@ module CanhelpPlugin
         enrollments = get_json_paginated(
           token,
           "#{canvas_url}/api/v1/courses/#{course_ids}/enrollments",
-          "state[]=active&state[]=completed&role[]=TeacherEnrollment"
+          "state[]=active&state[]=completed&type[]=StudentEnrollment"
         )
 
         course_name = course['name']
@@ -42,43 +41,39 @@ module CanhelpPlugin
         puts "- Total number of students: #{total_students}"
 
         enrollments.each do |enrollment|
-          if enrollment['role_id'] == 4 #4; 7
-            all_teacher_enrollments << enrollment
+          if enrollment['role_id'] == 3 #role_id: 3, 6
+            all_student_enrollments << enrollment
 
-            teacher_name = enrollment['user']['name']
+            student_name = enrollment['user']['name']
 
-            puts "- Teacher's Name: #{teacher_name}"
+            puts "- Students' Name: #{student_name}"
 
           end
         end
       end
     end
 
-    teacher_ids = all_teacher_enrollments.map { |enrollment|
+    student_ids = all_student_enrollments.map { |enrollment|
       enrollment['user_id']
     }.uniq
 
-    all_teacher_info = teacher_ids.map do |id|
-      teacher_enrollment = all_teacher_enrollments.find { |enrollment|
+    all_student_info = student_ids.map do |id|
+      student_enrollment = all_student_enrollments.find { |enrollment|
         enrollment['user_id'] == id
       }
-      next if teacher_enrollment.nil?
+      next if student_enrollment.nil?
 
-      [teacher_enrollment['user']['name'],teacher_enrollment['user_id'],teacher_enrollment['created_at'], teacher_enrollment['updated_at']]
+      "#{student_enrollment['user']['name']} - #{student_enrollment['user_id']} | #{student_enrollment['created_at']} | #{student_enrollment['updated_at']}"
+    end.sort_by(&:downcase)
 
-    end.sort_by { |info_row| info_row[0].downcase }
+    total_student_count = student_ids.count
 
-    total_teacher_count = teacher_ids.count
     puts
-    puts "Total number of TeacherEnrollments: #{total_teacher_count}"
+    puts "Total number of StudentEnrollments: #{total_student_count}"
     puts
-    puts "All Teachers' Names: "
-    CSV.open("../csv_help/csv/write_here.csv", "wb") do |csv|
-      all_teacher_info.each do |info_row|
-        csv << info_row
-        #puts "- #{name}"
-      end
+    puts "All Students' Names: "
+    all_student_info.each do |name|
+      puts "- #{name}"
     end
-    puts "CSV done"
   end
 end
