@@ -48,7 +48,7 @@ module CanhelpPlugin
         }
       else
         puts "\n"
-        puts "Created #{count} course(s) in account #{account_id}."
+        puts "Created #{current_count} course(s) in account #{account_id}."
         puts "\n"
       end
 

@@ -8,11 +8,34 @@ module Canhelp
     File.open('.token').read
   end
 
-  def get_json(token, url)
+  def get_request(token, url)
     conn = Faraday.new(url)
     conn.authorization :Bearer, token
-    conn.adapter Faraday.default_adapter
-    JSON.parse(conn.get.body)
+    conn.get
+  end
+
+  def get_json(token, url)
+    JSON.parse(get_request(token, url).body)
+  end
+
+  def get_next_link(link_headers)
+    return unless link_headers
+    next_link = link_headers.split(',').find { |link| link.include?('rel="next"') }
+    next_link && next_link.slice(/\<(?<url>.+)\>/, 'url')
+  end
+
+  def get_all_pages(token, url, data = [])
+    response = get_request(token, url)
+    raise "Unsuccessful Response #{response.body}" unless response.success?
+
+    body = JSON.parse(response.body)
+    data += body.is_a?(Array) ? body : [body]
+    next_page = get_next_link(response.headers['link'])
+    if (next_page)
+      get_all_pages(token, next_page, data)
+    else
+      data
+    end
   end
 
   def get_json_paginated(token, url, parameters='')
@@ -23,6 +46,16 @@ module Canhelp
       page += 1
     end
     return all_items
+  end
+
+  def get_link_headers(token, url, parameters='')
+    all_items = []
+    items = get_json(
+      token,
+      "#{url}?#{parameters}"
+    )
+    #.map {|u| u['context_type']}
+    all_items << items
   end
 
   def canvas_post(url, token, json_body)

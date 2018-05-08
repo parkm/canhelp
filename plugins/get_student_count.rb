@@ -9,7 +9,9 @@ module CanhelpPlugin
     student_role_id = prompt(:student_role_id)
   )
     token = get_token
-    subaccount_ids = get_json_paginated(token, "#{canvas_url}/api/v1/accounts/#{account_id}/sub_accounts", "recursive=true").map{|s| s['id']}
+    subaccount_ids = get_json_paginated(
+      token, "#{canvas_url}/api/v1/accounts/#{account_id}/sub_accounts", "recursive=true"
+    ).map{|s| s['id']}
     subaccount_ids << account_id
 
     puts "\t"
@@ -24,7 +26,7 @@ module CanhelpPlugin
       courses = get_json_paginated(
       token,
       "#{canvas_url}/api/v1/accounts/#{subaccount_id}/courses",
-      "include[]=total_students&include[]=teachers&state[]=created&state[]=claimed&state[]=available&state[]=completed"
+      "include[]=total_students&include[]=teachers&state[]=available&state[]=completed"
       )
 
       courses.each do |course|
@@ -33,25 +35,37 @@ module CanhelpPlugin
           enrollments = get_json_paginated(
             token,
             "#{canvas_url}/api/v1/courses/#{course_ids}/enrollments",
-            "state[]=active&state[]=completed&type[]=StudentEnrollment"
+            "state[]=active&state[]=completed&role[]=StudentEnrollment"
           )
 
           course_name = course['name']
           course_state = course['workflow_state']
           total_students = course['total_students']
+          teacher_display_name = course['teachers']
+
+          teacher_display_name.each do |teacher|
+            teacher_name = teacher['display_name']
+            puts
+            puts "Teacher's Name: #{teacher_name}"
+          end
 
           puts
-          puts "Course Name: #{course_name}"
+          puts "- Course Name: #{course_name}"
+          puts
           puts "- State: #{course_state}"
+          puts
           puts "- Total number of students: #{total_students}"
+          puts
 
           enrollments.each do |enrollment|
             if enrollment['role_id'].to_s == "#{student_role_id}"
               all_student_enrollments << enrollment
 
               student_name = enrollment['user']['name']
+              student_sis = enrollment['user']['sis_user_id']
+              student_workflow_state = enrollment['enrollment_state']
 
-              puts "- Student's Name: #{student_name}"
+              puts "- Student's Name: #{student_name} - #{student_sis} - #{student_workflow_state}"
 
             end
           end
