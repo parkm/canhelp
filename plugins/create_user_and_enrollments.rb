@@ -24,7 +24,12 @@ module CanhelpPlugin
 
     if non_active.include? ("#{state}") || user_id.empty?
       active_state = "active"
-      created_user_id = create_user(subdomain, prefix, count)
+      created_user_id = create_user(subdomain,
+      prefix,
+      count,
+      type,
+      state
+    )
 
       created_user_id.each do |u|
         enrollment_list << create_enrollment(subdomain, course_id, u, type, active_state, self_enroll)
@@ -39,14 +44,26 @@ module CanhelpPlugin
       puts "\nDone."
 
     elsif state.empty? || user_id.empty?
-      created_user_id = create_user(subdomain, prefix, count)
+      created_user_id = create_user(
+        subdomain,
+        prefix,
+        count,
+        type,
+        state
+      )
       created_user_id.each do |u|
         create_enrollment(subdomain, course_id, u, type, state="active", self_enroll)
       end
       puts "Done."
 
     else
-      created_user_id = create_user(subdomain, prefix, count)
+      created_user_id = create_user(
+        subdomain,
+        prefix,
+        count,
+        type,
+        state
+      )
       created_user_id.each do |u|
         create_enrollment(subdomain, course_id, u, type, state="active", self_enroll)
       end

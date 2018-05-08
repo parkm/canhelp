@@ -44,7 +44,7 @@ module Actions
 
   end
 
-  def create_user(subdomain, prefix, count)
+  def create_user(subdomain, prefix, count, type, state)
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
     failures = []
@@ -68,16 +68,16 @@ module Actions
         },
 
         pseudonym: {
-          unique_id: "#{prefix}#{current_count}#{pseudonym}_login",
-          password: "#{prefix}#{current_count}#{pseudonym}_password",
-          sis_user_id: "#{prefix}#{current_count}#{pseudonym}_sis",
+          unique_id: "#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}_login",
+          password: "#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}_login",
+          sis_user_id: "#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}_sis",
           send_confirmation: false,
           force_self_registration: false
         },
 
         communication_channel: {
           type: "email",
-          address: "aiona+#{prefix}#{current_count}#{pseudonym}@instructure.com",
+          address: "aiona+#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}@instructure.com",
           skip_confirmation: true
         },
 
@@ -158,7 +158,7 @@ module Actions
       }
     else
       puts "\n"
-      puts "#{checkmark}Created an #{state} enrollment for user #{user_id} to course #{course_id}."
+      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to course #{course_id}."
       puts "\n"
     end
 
