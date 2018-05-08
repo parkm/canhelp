@@ -3,7 +3,11 @@ require './canhelplib'
 module CanhelpPlugin
   include Canhelp
 
-  def self.get_student_count(canvas_url, account_id)
+  def self.get_student_count(
+    canvas_url=prompt(:canvas_url),
+    account_id=prompt(:account_id),
+    student_role_id = prompt(:student_role_id)
+  )
     token = get_token
     subaccount_ids = get_json_paginated(token, "#{canvas_url}/api/v1/accounts/#{account_id}/sub_accounts", "recursive=true").map{|s| s['id']}
     subaccount_ids << account_id
@@ -20,34 +24,36 @@ module CanhelpPlugin
       courses = get_json_paginated(
       token,
       "#{canvas_url}/api/v1/accounts/#{subaccount_id}/courses",
-      "include[]=total_students&include[]=teachers&state[]=created&state[]=claimed&state[]=available&state[]=completed&published=true"
+      "include[]=total_students&include[]=teachers&state[]=created&state[]=claimed&state[]=available&state[]=completed"
       )
 
       courses.each do |course|
-        course_ids = course['id']
-        enrollments = get_json_paginated(
-          token,
-          "#{canvas_url}/api/v1/courses/#{course_ids}/enrollments",
-          "state[]=active&state[]=completed&type[]=StudentEnrollment"
-        )
+        if course['workflow_state'] != 'unpublished'
+          course_ids = course['id']
+          enrollments = get_json_paginated(
+            token,
+            "#{canvas_url}/api/v1/courses/#{course_ids}/enrollments",
+            "state[]=active&state[]=completed&type[]=StudentEnrollment"
+          )
 
-        course_name = course['name']
-        course_state = course['workflow_state']
-        total_students = course['total_students']
+          course_name = course['name']
+          course_state = course['workflow_state']
+          total_students = course['total_students']
 
-        puts
-        puts "Course Name: #{course_name}"
-        puts "- State: #{course_state}"
-        puts "- Total number of students: #{total_students}"
+          puts
+          puts "Course Name: #{course_name}"
+          puts "- State: #{course_state}"
+          puts "- Total number of students: #{total_students}"
 
-        enrollments.each do |enrollment|
-          if enrollment['role_id'] == 3 #role_id: 3, 6
-            all_student_enrollments << enrollment
+          enrollments.each do |enrollment|
+            if enrollment['role_id'].to_s == "#{student_role_id}"
+              all_student_enrollments << enrollment
 
-            student_name = enrollment['user']['name']
+              student_name = enrollment['user']['name']
 
-            puts "- Students' Name: #{student_name}"
+              puts "- Student's Name: #{student_name}"
 
+            end
           end
         end
       end
@@ -63,13 +69,13 @@ module CanhelpPlugin
       }
       next if student_enrollment.nil?
 
-      "#{student_enrollment['user']['name']} - #{student_enrollment['user_id']} | #{student_enrollment['created_at']} | #{student_enrollment['updated_at']}"
+      "#{student_enrollment['user']['name']} - #{student_enrollment['user_id']} | #{student_enrollment['sis_user_id']} | #{student_enrollment['created_at']} | #{student_enrollment['updated_at']}"
     end.sort_by(&:downcase)
 
     total_student_count = student_ids.count
 
     puts
-    puts "Total number of StudentEnrollments: #{total_student_count}"
+    puts "Total number of active and completed StudentEnrollments: #{total_student_count}"
     puts
     puts "All Students' Names: "
     all_student_info.each do |name|

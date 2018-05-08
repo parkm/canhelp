@@ -4,7 +4,11 @@ require 'csv'
 module CanhelpPlugin
   include Canhelp
 
-  def self.get_teacher_count(canvas_url, account_id)
+  def self.get_teacher_count(
+    canvas_url=prompt(:canvas_url),
+    account_id=prompt(:account_id),
+    teacher_role_id = prompt(:teacher_role_id)
+  )
     token = get_token
     subaccount_ids = get_json_paginated(token, "#{canvas_url}/api/v1/accounts/#{account_id}/sub_accounts", "recursive=true").map{|s| s['id']}
     subaccount_ids << account_id
@@ -42,7 +46,7 @@ module CanhelpPlugin
         puts "- Total number of students: #{total_students}"
 
         enrollments.each do |enrollment|
-          if enrollment['role_id'] == 4 #4; 7
+          if enrollment['role_id'].to_s == "#{teacher_role_id}"
             all_teacher_enrollments << enrollment
 
             teacher_name = enrollment['user']['name']
