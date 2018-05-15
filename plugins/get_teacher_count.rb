@@ -23,9 +23,9 @@ module CanhelpPlugin
 
     subaccount_ids.each do |subaccount_id|
       courses = get_json_paginated(
-      token,
-      "#{canvas_url}/api/v1/accounts/#{subaccount_id}/courses",
-      "include[]=teachers&include[]=total_students&state[]=available&state[]=claimed&state[]=created&state[]=completed",
+        token,
+        "#{canvas_url}/api/v1/accounts/#{subaccount_id}/courses",
+        "include[]=teachers&include[]=total_students&state[]=available&state[]=claimed&state[]=created&state[]=completed"
       )
 
       courses.each do |course|

@@ -35,7 +35,7 @@ module CanhelpPlugin
           enrollments = get_json_paginated(
             token,
             "#{canvas_url}/api/v1/courses/#{course_ids}/enrollments",
-            "state[]=active&state[]=completed&role[]=StudentEnrollment"
+            "state[]=active&state[]=completed&type[]=StudentEnrollment"
           )
 
           course_name = course['name']

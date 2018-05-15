@@ -29,10 +29,14 @@ module Actions
   # get enrollment id, and course id per enrollment
   # pass to update_enrollment (token, canvas_url, e['course_id'], e['id'], task = nil)
 
+  # get_enrollments(token, subdomain, state: 'active')
+  # def get_enrollments(token, url, options)
+  #   url + "?state=#{options[:state]}" if options[:state]
+  # end
+
   def get_enrollment (subdomain, course_id, state)
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
-
 
     puts "Finding enrollments..."
 
@@ -42,6 +46,22 @@ module Actions
 
     course_enrollment
 
+  end
+
+  def get_sub_accounts(subdomain,account_id)
+    token = get_token
+    subaccount_ids = get_all_pages(
+      token,
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{account_id}/sub_accounts?recursive=true").map{|s| s['id']}
+
+  end
+
+  def get_courses (subdomain,subaccount_id)
+    token = get_token
+    courses = get_all_pages(
+      token,
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students&state[]=available&state[]=claimed&state[]=created&state[]=completed"
+    )
   end
 
   def create_user(subdomain, prefix, count, type, state)
