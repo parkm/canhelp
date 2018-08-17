@@ -34,8 +34,6 @@ module CanhelpPlugin
         course_ids = course['id']
         course_account_id = course['account_id']
 
-        #binding.pry
-
         if course_account_id == account_id.to_i
 
           enrollments = get_all_pages(

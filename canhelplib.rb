@@ -48,16 +48,6 @@ module Canhelp
     return all_items
   end
 
-  def get_link_headers(token, url, parameters='')
-    all_items = []
-    items = get_json(
-      token,
-      "#{url}?#{parameters}"
-    )
-    #.map {|u| u['context_type']}
-    all_items << items
-  end
-
   def canvas_post(url, token, json_body)
     uri = URI(url)
 

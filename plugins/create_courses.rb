@@ -7,6 +7,7 @@ module CanhelpPlugin
   def self.create_courses(
     subdomain = prompt(:subdomain),
     account_id = prompt(:account_id),
+    term = prompt(:term_id),
     count = prompt(:count),
     prefix = prompt(:prefix)
   )
@@ -21,9 +22,10 @@ module CanhelpPlugin
         course: {
           name: "#{prefix} #{current_count}",
           course_code: "#{prefix} Course Code #{current_count}",
-          sis_course_id: "#{prefix}_sis_#{current_count}"
+          sis_course_id: "#{prefix}_sis_#{current_count}",
+          term_id: "#{term}"
         },
-        offer: true,
+        offer: false, #publish or unpublish
         enroll_me: false
       })
 

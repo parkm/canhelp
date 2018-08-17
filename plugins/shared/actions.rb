@@ -36,7 +36,7 @@ module Actions
 
   def get_enrollment (subdomain, course_id, state)
     token = get_token
-    canvas_url = "https://#{subdomain}.instructure.com"
+    canvas_url = "#{subdomain}"
 
     puts "Finding enrollments..."
 
@@ -60,7 +60,7 @@ module Actions
     token = get_token
     courses = get_all_pages(
       token,
-      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students&state[]=available&state[]=claimed&state[]=created&state[]=completed"
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students&state[]=available&state[]=completed"
     )
   end
 
