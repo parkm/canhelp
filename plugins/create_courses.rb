@@ -25,7 +25,7 @@ module CanhelpPlugin
           sis_course_id: "#{prefix}_sis_#{current_count}",
           term_id: "#{term}"
         },
-        offer: false, #publish or unpublish
+        offer: true, #publish or unpublish
         enroll_me: false
       })
 

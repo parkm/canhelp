@@ -12,7 +12,8 @@ module CanhelpPlugin
     prefix = prompt(:prefix),
     teacher_count_per_state = prompt(:teacher_count),
     student_count_per_state = prompt(:student_count),
-    course_id = prompt(:course_id)
+    course_id = prompt(:course_id),
+    section_id = prompt(:section_id)
   )
 
   # student_total_count_per_state = 1
@@ -51,6 +52,7 @@ module CanhelpPlugin
         student_enrollment_list << create_enrollment(
           subdomain,
           course_id,
+          section_id,
           student,
           student_type,
           effective_state,
@@ -72,6 +74,7 @@ module CanhelpPlugin
         teacher_enrollment_list << create_enrollment(
           subdomain,
           course_id,
+          section_id,
           teacher,
           teacher_type,
           effective_state,
