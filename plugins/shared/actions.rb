@@ -60,8 +60,8 @@ module Actions
     token = get_token
     courses = get_all_pages(
       token,
-      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students"
-      # &state[]=available&state[]=completed"
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses"
+      #needs to change for pageviews include[]=teachers&include[]=total_students&state[]=available&state[]=completed"
     )
   end
 
@@ -237,7 +237,7 @@ module Actions
       }
     else
       puts "\n"
-      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to course #{course_id}."
+      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to section #{section_id}."
       puts "\n"
     end
 

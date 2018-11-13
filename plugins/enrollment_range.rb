@@ -18,8 +18,8 @@ module CanhelpPlugin
 
     token = get_token
 
-    teacher_count_per_state = 1 if teacher_count.empty?
-    student_count_per_state = 1 if student_count.empty?
+    teacher_count = 1 if teacher_count.empty?
+    student_count = 1 if student_count.empty?
     student_type = 's'
     teacher_type = 't'
     student_enrollment_list = []
@@ -42,15 +42,16 @@ module CanhelpPlugin
       memo.concat(mapping.last)
       memo
     end
-binding.pry
 
     section_ids.each do |section_id|
+
+
 
       #students
       created_student_ids = create_user(
           subdomain,
           prefix,
-          student_count_per_state,
+          student_count,
           student_type,
           state
         )
@@ -61,7 +62,7 @@ binding.pry
             section_id,
             student,
             student_type,
-            effective_state,
+            state,
             self_enroll=nil
           )
         end
@@ -70,7 +71,7 @@ binding.pry
         created_teacher_ids = create_user(
           subdomain,
           prefix,
-          teacher_count_per_state,
+          teacher_count,
           teacher_type,
           state
         )
@@ -81,7 +82,7 @@ binding.pry
             section_id,
             teacher,
             teacher_type,
-            effective_state,
+            state,
             self_enroll=nil
           )
         end
@@ -91,7 +92,6 @@ binding.pry
     #puts "Sections in Course #{section_hash}"
     puts "All section ids: #{section_ids}"
     puts "Courses in account:#{course_ids}"
-
 
   end
 end
