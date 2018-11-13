@@ -60,7 +60,16 @@ module Actions
     token = get_token
     courses = get_all_pages(
       token,
-      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students&state[]=available&state[]=completed"
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students"
+      # &state[]=available&state[]=completed"
+    )
+  end
+
+  def get_sections (subdomain,course_id)
+    token = get_token
+    courses = get_all_pages(
+      token,
+      "https://#{subdomain}.instructure.com/api/v1/courses/#{course_id}/sections"
     )
   end
 
@@ -140,7 +149,7 @@ module Actions
     user_id
   end
 
-  def create_enrollment(subdomain, course_id, user_id, type, state, self_enroll)
+  def create_enrollment(subdomain, course_id, section_id, user_id, type, state, self_enroll)
     token = get_token
     checkmark = "\u2713"
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -156,7 +165,57 @@ module Actions
         user_id: user_id,
         type: parse_type("#{type}"),
         enrollment_state: "#{state}",
-        self_enrolled: "#{self_enroll}"
+        self_enrolled: "#{self_enroll}",
+        course_section_id: section_id
+        }
+      })
+
+    if response.kind_of? Net::HTTPSuccess
+      print "."
+    else
+      failures << response
+      print "x"
+    end
+
+    if failures.length > 0
+      puts "Failures encountered"
+      failures.each { |resp|
+        puts "\n"
+        puts "#{resp.code}: #{resp.message}"
+        puts JSON.parse(resp.body)
+        puts "---------------------"
+        puts "\n"
+      }
+    else
+      puts "\n"
+      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to course #{course_id}."
+      puts "\n"
+    end
+
+    #binding.pry
+
+    JSON.parse(response.body)
+
+  end
+
+
+  def create_section_enrollment(subdomain, section_id, user_id, type, state, self_enroll)
+    token = get_token
+    checkmark = "\u2713"
+    canvas_url = "https://#{subdomain}.instructure.com"
+    #random_state = ['active', 'invited', 'inactive'].sample(1)
+
+    print "Creating Section Enrollment..."
+
+    failures = []
+
+    response = canvas_post("#{canvas_url}/api/v1/sections/#{section_id}/enrollments", token,
+      {
+        enrollment: {
+        user_id: user_id,
+        type: parse_type("#{type}"),
+        enrollment_state: "#{state}",
+        self_enrolled: "#{self_enroll}",
         }
       })
 

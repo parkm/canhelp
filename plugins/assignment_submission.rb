@@ -1,4 +1,5 @@
 require './canhelplib'
+require 'pry'
 module CanhelpPlugin
   include Canhelp
 
@@ -45,6 +46,7 @@ module CanhelpPlugin
 
     else
       user_ids.each do |user_id|
+        binding.pry
         result = create_submission(token,subdomain, course_id, assignment_id, user_id)
         puts "user #{user_id} submitted to assignment #{assignment_id}"
       end
