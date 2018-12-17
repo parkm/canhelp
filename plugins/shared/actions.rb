@@ -9,18 +9,6 @@ module Actions
   # Update course enrollments using token, canvas_url, course_id, enrollment_id, and state
   # random_state = ['conclude', 'delete', 'inactivate', 'deactivate'].sample(1)
   # delete using url, token, json body
-
-  def update_enrollment(subdomain, course_id, enrollment_id, state)
-    canvas_url = "https://#{subdomain}.instructure.com"
-    token = get_token
-
-    canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}", token,
-    {
-      task: state
-    }
-    )
-  end
-
   # Grab all course enrollments using subdomain, course_id
   # canvas_url using the subdomain given
   # puts "Finding enrollments..."
@@ -46,6 +34,28 @@ module Actions
 
     course_enrollment
 
+  end
+
+  def create_sis_import(subdomain)
+    token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
+
+    canvas_post_csv("#{canvas_url}/api/v1/accounts/self/sis_imports.json?import_type=instructure_csv",
+      token,
+      "csv/users.csv"
+    )
+  end
+
+  def update_enrollment(subdomain, course_id, enrollment_id, state)
+    canvas_url = "https://#{subdomain}.instructure.com"
+    token = get_token
+
+    canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}",
+    token,
+      {
+      task: state
+      }
+    )
   end
 
   def get_sub_accounts(subdomain,account_id)
