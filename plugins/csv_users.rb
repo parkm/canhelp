@@ -20,17 +20,6 @@ module CanhelpPlugin
   )
   token = get_token
 
-  def parse_type(sis_import)
-    case sis_import
-    when 't'
-      'true'
-    when 'f'
-      'false'
-    else
-      sis_import
-    end
-  end
-
   user_count = 1 if user_count.empty?
 
   print "Creating User(s)..."
@@ -58,7 +47,7 @@ module CanhelpPlugin
       end
     end
 
-    if sis_import == "true"
+    if truthy_response?(sis_import)
       puts "\n"
       puts "Imported CSV file to #{subdomain}'s account."
       create_sis_import(subdomain)
@@ -69,5 +58,8 @@ module CanhelpPlugin
 
   end
 
+  def truthy_response?(sis_import)
+    sis_import.match?(/t|true/)
+  end
 
 end
