@@ -9,42 +9,6 @@ module Actions
   # Update course enrollments using token, canvas_url, course_id, enrollment_id, and state
   # random_state = ['conclude', 'delete', 'inactivate', 'deactivate'].sample(1)
   # delete using url, token, json body
-  # Grab all course enrollments using subdomain, course_id
-  # canvas_url using the subdomain given
-  # puts "Finding enrollments..."
-  # get enrollments via api
-  # puts "#{course_enrollment.count} enrollment(s) found."
-  # get enrollment id, and course id per enrollment
-  # pass to update_enrollment (token, canvas_url, e['course_id'], e['id'], task = nil)
-
-  # get_enrollments(token, subdomain, state: 'active')
-  # def get_enrollments(token, url, options)
-  #   url + "?state=#{options[:state]}" if options[:state]
-  # end
-
-  def get_enrollment (subdomain, course_id, state)
-    token = get_token
-    canvas_url = "#{subdomain}"
-
-    puts "Finding enrollments..."
-
-    course_enrollment = get_json_paginated(token,"#{canvas_url}/api/v1/courses/#{course_id}/enrollments")
-
-    puts "#{course_enrollment.count} enrollment(s) found."
-
-    course_enrollment
-
-  end
-
-  def create_sis_import(subdomain)
-    token = get_token
-    canvas_url = "https://#{subdomain}.instructure.com"
-
-    canvas_post_csv("#{canvas_url}/api/v1/accounts/self/sis_imports.json?import_type=instructure_csv",
-      token,
-      "csv/users.csv"
-    )
-  end
 
   def update_enrollment(subdomain, course_id, enrollment_id, state)
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -58,6 +22,31 @@ module Actions
     )
   end
 
+  # Grab all course enrollments using subdomain, course_id
+  # canvas_url using the subdomain given
+  # puts "Finding enrollments..."
+  # get enrollments via api
+  # puts "#{course_enrollment.count} enrollment(s) found."
+  # get enrollment id, and course id per enrollment
+  # pass to update_enrollment (token, canvas_url, e['course_id'], e['id'], task = nil)
+
+  # get_enrollments(token, subdomain, state: 'active')
+  # def get_enrollments(token, url, options)
+  #   url + "?state=#{options[:state]}" if options[:state]
+  # end
+
+  #csv sis import
+  def create_sis_import(subdomain,file)
+    token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
+
+    canvas_post_csv("#{canvas_url}/api/v1/accounts/self/sis_imports.json?import_type=instructure_csv",
+      token,
+      file
+    )
+  end
+
+#get all sub_accounts in account specified
   def get_sub_accounts(subdomain,account_id)
     token = get_token
     subaccount_ids = get_all_pages(
@@ -66,6 +55,7 @@ module Actions
 
   end
 
+#get all courses in account id specified
   def get_courses (subdomain,subaccount_id)
     token = get_token
     courses = get_all_pages(
@@ -75,6 +65,7 @@ module Actions
     )
   end
 
+#get all section in course
   def get_sections (subdomain,course_id)
     token = get_token
     courses = get_all_pages(
@@ -83,6 +74,7 @@ module Actions
     )
   end
 
+#create users
   def create_user(subdomain, prefix, count, type, state)
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -159,7 +151,7 @@ module Actions
     user_id
   end
 
-  def create_enrollment(subdomain, course_id, section_id, user_id, type, state, self_enroll)
+  def create_enrollment(subdomain, course_id, user_id, type, state, self_enroll)
     token = get_token
     checkmark = "\u2713"
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -176,7 +168,6 @@ module Actions
         type: parse_type("#{type}"),
         enrollment_state: "#{state}",
         self_enrolled: "#{self_enroll}",
-        course_section_id: section_id
         }
       })
 

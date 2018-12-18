@@ -1,14 +1,14 @@
-require '././canhelplib'
+require './canhelplib'
 require 'csv'
 require 'faker'
 require_relative 'shared/actions.rb'
+require_relative 'shared/actions_csv.rb'
 
-# create users.csv
-# specify true or false to uplaod csv (sis import api)
-
-require './canhelplib'
 module CanhelpPlugin
   include Canhelp
+
+  # create users.csv
+  # specify true or false to uplaod csv (sis import api)
 
   def self.csv_users(
     subdomain = prompt(:subdomain),
@@ -18,48 +18,14 @@ module CanhelpPlugin
     state = prompt(:state),
     sis_import = prompt(:sis_import_true_or_false)
   )
-  token = get_token
+    token = get_token
 
-  user_count = 1 if user_count.empty?
+    user_count = 1 if user_count.empty?
+    file_path = "csv/users.csv"
 
-  print "Creating User(s)..."
+    puts "Created User(s):"
 
-    CSV.open("csv/users.csv",
-      "wb",
-      :write_headers=> true,
-      :headers=>
-      ['user_id','integration_id','login_id','password','ssha_password','authentication_provider_id','first_name','last_name','full_name','sortable_name','short_name','email','status']
-    ) do |csv|
-      user_count.to_i.times do |i|
-        current_count = i + 1
-        name = Faker::Name.name
-        pseudonym = SecureRandom.hex(5)
-
-        user_id= "#{user_type}_#{state}_#{prefix}#{current_count}#{pseudonym}_sis"
-        login_id = "#{user_type}_#{state}_#{prefix}#{current_count}#{pseudonym}_login"
-        password = "#{user_type}_#{state}_#{prefix}#{current_count}#{pseudonym}_login"
-        full_name = "#{name}"
-        email="aiona+#{user_type}_#{state}_#{prefix}#{current_count}#{pseudonym}@instructure.com"
-        status = state
-
-        csv << [user_id,nil,login_id,password,nil,nil,nil,nil,full_name,nil,nil,email,state]
-        print "."
-      end
-    end
-
-    if truthy_response?(sis_import)
-      puts "\n"
-      puts "Imported CSV file to #{subdomain}'s account."
-      create_sis_import(subdomain)
-    else
-      puts "\n"
-      puts "CSV created without importing."
-    end
-
-  end
-
-  def truthy_response?(sis_import)
-    sis_import.match?(/t|true/)
+    create_users_csv(subdomain,file_path,user_count,prefix,user_type,state,sis_import)
   end
 
 end

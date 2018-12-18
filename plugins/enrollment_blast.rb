@@ -7,13 +7,15 @@ module CanhelpPlugin
   include Canhelp
   include Actions
 
+  #creates users and student and teacher enrollments in each enrollment state
+  #can specify which course to add enrollments in
+
   def self.enrollment_blast(
     subdomain = prompt(:subdomain),
     prefix = prompt(:prefix),
     teacher_count_per_state = prompt(:teacher_count),
     student_count_per_state = prompt(:student_count),
-    course_id = prompt(:course_id),
-    section_id = prompt(:section_id)
+    course_id = prompt(:course_id)
   )
 
   # student_total_count_per_state = 1
@@ -52,7 +54,6 @@ module CanhelpPlugin
         student_enrollment_list << create_enrollment(
           subdomain,
           course_id,
-          section_id,
           student,
           student_type,
           effective_state,
@@ -74,7 +75,6 @@ module CanhelpPlugin
         teacher_enrollment_list << create_enrollment(
           subdomain,
           course_id,
-          section_id,
           teacher,
           teacher_type,
           effective_state,

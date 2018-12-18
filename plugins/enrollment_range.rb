@@ -7,6 +7,11 @@ require 'pry'
 module CanhelpPlugin
   include Canhelp
 
+  #creates users and student and teacher enrollments in specified account
+  #can only specify enrollment state job
+  #create user per section
+  #for each section, add enrollments based on teacher_count and student_count
+
   def self.enrollment_range(
       subdomain = prompt(:subdomain),
       subaccount_id = prompt(:subaccount_id),
