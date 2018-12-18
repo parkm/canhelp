@@ -1,0 +1,16 @@
+{
+  "name": "canhelp_rails",
+  "private": true,
+  "dependencies": {
+    "@instructure/ui-elements": "^5.36.0",
+    "@instructure/ui-themes": "^5.36.0",
+    "@rails/webpacker": "3.5",
+    "babel-preset-react": "^6.24.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "2.11.2"
+  }
+}
