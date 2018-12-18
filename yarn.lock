@@ -73,6 +73,41 @@
     classnames "^2"
     prop-types "^15"
 
+"@instructure/ui-form-field@^5.36.0":
+  version "5.36.0"
+  resolved "https://registry.yarnpkg.com/@instructure/ui-form-field/-/ui-form-field-5.36.0.tgz#25da5ab48242db6c236e73b703f31123ffae66be"
+  dependencies:
+    "@instructure/ui-a11y" "^5.36.0"
+    "@instructure/ui-icons" "^5.36.0"
+    "@instructure/ui-layout" "^5.36.0"
+    "@instructure/ui-themeable" "^5.36.0"
+    "@instructure/ui-utils" "^5.36.0"
+    classnames "^2"
+    prop-types "^15"
+
+"@instructure/ui-forms@^5.36.0":
+  version "5.36.0"
+  resolved "https://registry.yarnpkg.com/@instructure/ui-forms/-/ui-forms-5.36.0.tgz#16236a450f005ae475d03f359d6c64b5e8bae9db"
+  dependencies:
+    "@instructure/debounce" "^5.36.0"
+    "@instructure/ui-a11y" "^5.36.0"
+    "@instructure/ui-buttons" "^5.36.0"
+    "@instructure/ui-elements" "^5.36.0"
+    "@instructure/ui-form-field" "^5.36.0"
+    "@instructure/ui-i18n" "^5.36.0"
+    "@instructure/ui-icons" "^5.36.0"
+    "@instructure/ui-layout" "^5.36.0"
+    "@instructure/ui-number-input" "^5.36.0"
+    "@instructure/ui-overlays" "^5.36.0"
+    "@instructure/ui-svg-images" "^5.36.0"
+    "@instructure/ui-testable" "^5.36.0"
+    "@instructure/ui-themeable" "^5.36.0"
+    "@instructure/ui-utils" "^5.36.0"
+    babel-runtime "^6"
+    classnames "^2"
+    keycode "^2"
+    prop-types "^15"
+
 "@instructure/ui-i18n@^5.36.0":
   version "5.36.0"
   resolved "https://registry.yarnpkg.com/@instructure/ui-i18n/-/ui-i18n-5.36.0.tgz#37e7066186b651ce032feb54efd6d050263815c6"
@@ -115,6 +150,19 @@
     "@instructure/ui-themeable" "^5.36.0"
     "@instructure/ui-utils" "^5.36.0"
     babel-runtime "^6"
+    prop-types "^15"
+
+"@instructure/ui-number-input@^5.36.0":
+  version "5.36.0"
+  resolved "https://registry.yarnpkg.com/@instructure/ui-number-input/-/ui-number-input-5.36.0.tgz#db6fd76b69b4d7314701d74eee2d2b0a9d393e80"
+  dependencies:
+    "@instructure/ui-form-field" "^5.36.0"
+    "@instructure/ui-icons" "^5.36.0"
+    "@instructure/ui-themeable" "^5.36.0"
+    "@instructure/ui-utils" "^5.36.0"
+    babel-runtime "^6"
+    classnames "^2"
+    keycode "^2"
     prop-types "^15"
 
 "@instructure/ui-overlays@^5.36.0":

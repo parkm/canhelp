@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@instructure/ui-elements": "^5.36.0",
+    "@instructure/ui-forms": "^5.36.0",
     "@instructure/ui-themes": "^5.36.0",
     "@rails/webpacker": "3.5",
     "babel-preset-react": "^6.24.1",
