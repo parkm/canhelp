@@ -12,7 +12,7 @@ module CanhelpPlugin
     token = get_token
     checkmark = "\u2713"
 
-    response = canvas_post("https://#{subdomain}.instructure.com/api/v1/accounts/1/courses", token, {
+    response = canvas_post("https://#{subdomain}.instructure.com/api/v1/accounts/self/courses", token, {
       course: {
         name: course_name,
         course_code: course_name.split(' ').join('_'),
@@ -31,7 +31,7 @@ module CanhelpPlugin
       print "Failed to create course"
       return
     end
-
+    
     self.create_user_and_enrollment(subdomain, user_prefix, student_count, course_response['id'], [], 'StudentEnrollment', 'active', true)
     self.create_user_and_enrollment(subdomain, user_prefix, 1, course_response['id'], [], 'TeacherEnrollment', 'active', true)
   end
