@@ -15,7 +15,9 @@ import { apiGet, apiPost } from 'src/util.js';
 
 export default class PluginPage extends React.Component {
   state = {
-    submitting: false
+    submitting: false,
+    statusText: '',
+    statusTextColor: 'default'
   }
 
   componentWillMount() {
@@ -27,14 +29,33 @@ export default class PluginPage extends React.Component {
     let pluginArgs = {};
     Object.entries(args).forEach((arg) => pluginArgs[arg[0]] = arg[1].value);
 
-    this.setState({submitting: true});
+    this.setState({
+      submitting: true,
+      statusText: '',
+      statusTextColor: 'default'
+    });
 
     apiPost('plugins/execute', {
       plugin_file: plugin.fileName,
       plugin_method: plugin.method,
       plugin_args: pluginArgs
+    }).then(r => {
+      if (r.ok) {
+        return r.json()
+      } else {
+        throw new Error(`(${r.status}) ${r.statusText}`);
+      }
     }).then(data => {
-      this.setState({submitting: false});
+      this.setState({
+        submitting: false,
+        statusText: 'Completed!'
+      });
+    }).catch(err => {
+      this.setState({
+        submitting: false,
+        statusText: err.message,
+        statusTextColor: 'error'
+      });
     });
   }
 
@@ -44,14 +65,17 @@ export default class PluginPage extends React.Component {
       <div>
         <Button onClick={this.props.onBack}>Back to Dashboard</Button>
         <Typography align="center" variant="h4">{plugin.name}</Typography>
-        <Card
-        >
+        <Card>
           <CardContent>
-            {plugin.args.map(arg => {
-              return (
-                <TextField label={arg} ref={r => this.pluginArgRefs[arg] = r} />
-              );
-            })}
+            <Grid container spacing={24} sm={12}>
+              {plugin.args.map(arg => {
+                return (
+                  <Grid item sm={3}>
+                    <TextField fullWidth label={arg} ref={r => this.pluginArgRefs[arg] = r} />
+                  </Grid>
+                );
+              })}
+            </Grid>
           </CardContent>
           <CardActions>
             <Button
@@ -63,6 +87,7 @@ export default class PluginPage extends React.Component {
               Submit <SendIcon/>
             </Button>
             {this.state.submitting ? <CircularProgress/> : null}
+            <Typography color={this.state.statusTextColor}>{this.state.statusText}</Typography>
           </CardActions>
         </Card>
       </div>

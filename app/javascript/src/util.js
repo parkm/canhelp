@@ -20,7 +20,7 @@ let apiPost = (url, body) => {
     },
     body: JSON.stringify(body),
     credentials: 'include'
-  }).then(r => r.json());
+  })
 }
 
 export {apiGet, apiPost};
