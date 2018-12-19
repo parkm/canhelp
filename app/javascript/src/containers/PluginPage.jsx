@@ -71,7 +71,7 @@ export default class PluginPage extends React.Component {
               {plugin.args.map(arg => {
                 return (
                   <Grid item sm={3}>
-                    <TextField fullWidth label={arg} ref={r => this.pluginArgRefs[arg] = r} />
+                    <TextField fullWidth label={arg} inputRef={r => this.pluginArgRefs[arg] = r} />
                   </Grid>
                 );
               })}

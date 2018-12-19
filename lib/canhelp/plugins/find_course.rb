@@ -1,9 +1,9 @@
 require_relative '../canhelp'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
-  def self.find_course(canvas_url)
+  def self.find_course(canvas_url:)
     token = get_token
     courses = get_json(token, canvas_url + '/api/v1/courses')
     courses.each do |course|
