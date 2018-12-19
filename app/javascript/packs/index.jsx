@@ -2,24 +2,17 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
-import theme from '@instructure/ui-themes/lib/canvas'
-theme.use();
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
-import Heading from '@instructure/ui-elements/lib/components/Heading'
-import View from '@instructure/ui-layout/lib/components/View'
-import Modal from '@instructure/ui-overlays/lib/components/Modal'
-import ModalHeader from '@instructure/ui-overlays/lib/components/Modal'
-import ModalBody from '@instructure/ui-overlays/lib/components/Modal'
-import ModalFooter from '@instructure/ui-overlays/lib/components/Modal'
-import Text from '@instructure/ui-elements/lib/components/Text'
-import Button from '@instructure/ui-buttons/lib/components/Button'
-import Grid from '@instructure/ui-layout/lib/components/Grid'
-import GridCol from '@instructure/ui-layout/lib/components/Grid'
-import GridRow from '@instructure/ui-layout/lib/components/Grid'
-import Flex from '@instructure/ui-layout/lib/components/Flex'
-import FlexItem from '@instructure/ui-layout/lib/components/Flex'
-import Link from '@instructure/ui-elements/lib/components/Link'
-import TextInput from '@instructure/ui-forms/lib/components/TextInput'
+import SendIcon from '@material-ui/icons/Send';
 
 let apiGet = (url) => {
   let csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -49,49 +42,32 @@ let apiPost = (url, body) => {
 class PluginCard extends React.Component {
   render() {
     return (
-      <View
-        as="div"
-        margin="small"
-        padding="large"
-        textAlign="left"
-        background="default"
-        shadow="topmost"
+      <Card
       >
-        <div style={{"padding-bottom": "24px"}}>
-          <Heading level="h2">{this.props.title}</Heading>
-          <Text color="secondary">{this.props.description}</Text>
-        </div>
-        <div>
-          <View
-            as="div"
-            textAlign="left"
-            background="default"
-          >
-            <Button variant="primary" onClick={this.props.onClick}>{this.props.title}</Button>
-          </View>
-        </div>
-      </View>
+        <CardHeader title={this.props.title} subheader={this.props.description}/>
+        <CardActions>
+          <Button color="primary" onClick={this.props.onClick}>{this.props.title}</Button>
+        </CardActions>
+      </Card>
     );
   }
 }
 
 class Dashboard extends React.Component {
   state = {
-    plugins: {
-      "create_users.rb": {
-        name: 'Create Users',
-        description: 'Create users and enroll them in a course.',
-        args: ['course_id']
-      }
-    },
+    plugins: {},
     view: 'dashboard',
     currentPlugin: null,
-    submitting: false
+    submitting: false,
+    fetchingPlugins: true
   }
 
   componentWillMount() {
     apiGet('plugins').then(data => {
-      this.setState({plugins: data.plugins});
+      this.setState({
+        plugins: data.plugins,
+        fetchingPlugins: false
+      });
     });
   }
 
@@ -107,20 +83,29 @@ class Dashboard extends React.Component {
   renderDashboard() {
     return (
       <div >
-        <Heading level="h1" align="center">CanHelp Dashboard</Heading>
-        <Flex>
-          {Object.entries(this.state.plugins).map(plugin => {
-            return (
-              <FlexItem>
-                <PluginCard
-                  title={plugin[1].name}
-                  description={plugin[1].description}
-                  onClick={e => this.onPluginCardClick(plugin[0], plugin[1])}
-                />
-              </FlexItem>
-            );
-          })}
-        </Flex>
+        <Typography align="center" variant="h3" gutterBottom>CanHelp Dashboard</Typography>
+        {this.state.fetchingPlugins ? (
+          <Typography align="center">
+            <Typography variant="h5" gutterBottom>
+              Fetching Plugins...
+            </Typography>
+            <CircularProgress size={80}/>
+          </Typography>
+        ) : (
+          <Grid container spacing={24}>
+            {Object.entries(this.state.plugins).map(plugin => {
+              return (
+                <Grid item>
+                  <PluginCard
+                    title={plugin[1].name}
+                    description={plugin[1].description}
+                    onClick={e => this.onPluginCardClick(plugin[0], plugin[1])}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
       </div>
     );
   }
@@ -129,31 +114,28 @@ class Dashboard extends React.Component {
     let plugin = this.state.currentPlugin;
     return (
       <div>
-        <Link onClick={_ => this.setState({view: 'dashboard'})}>Back to Dashboard</Link>
-        <Heading level="h1" align="center">{plugin.name}</Heading>
-        <View
-          as="div"
-          margin="small"
-          padding="large"
-          textAlign="left"
-          background="default"
-          shadow="topmost"
+        <Button onClick={_ => this.setState({view: 'dashboard'})}>Back to Dashboard</Button>
+        <Typography align="center" variant="h4">{plugin.name}</Typography>
+        <Card
         >
-          {plugin.args.map(arg => {
-            return (
-              <TextInput label={arg} ref={r => this.pluginArgRefs[arg] = r} />
-            );
-          })}
-          <div style={{"margin-top": "24px"}}>
+          <CardContent>
+            {plugin.args.map(arg => {
+              return (
+                <TextField label={arg} ref={r => this.pluginArgRefs[arg] = r} />
+              );
+            })}
+          </CardContent>
+          <CardActions>
             <Button
-              variant="primary"
+              variant="contained"
+              color="primary"
               onClick={e => this.onPluginSubmit(this.pluginArgRefs) }
               disabled={this.state.submitting}
             >
-              Submit
+              Submit <SendIcon/>
             </Button>
-          </div>
-        </View>
+          </CardActions>
+        </Card>
       </div>
     );
   }
