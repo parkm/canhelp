@@ -7,6 +7,9 @@ module CanhelpPlugin
   include Canhelp
   include Actions
 
+  #creates users and student and teacher enrollments in each enrollment state
+  #can specify which course to add enrollments in
+
   def self.enrollment_blast(
     subdomain = prompt(:subdomain),
     prefix = prompt(:prefix),

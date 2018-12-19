@@ -8,6 +8,10 @@ module CanhelpPlugin
   include Canhelp
   include Actions
 
+  #creates users and student and teacher enrollments in specified enrollment state
+  #can specify which course and section to add enrollments in
+  #can specify which user id to enroll
+
   def self.create_user_and_enrollment (
     subdomain = prompt(:subdomain),
     prefix = prompt(:prefix),

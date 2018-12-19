@@ -48,16 +48,6 @@ module Canhelp
     return all_items
   end
 
-  def get_link_headers(token, url, parameters='')
-    all_items = []
-    items = get_json(
-      token,
-      "#{url}?#{parameters}"
-    )
-    #.map {|u| u['context_type']}
-    all_items << items
-  end
-
   def canvas_post(url, token, json_body)
     uri = URI(url)
 
@@ -68,6 +58,18 @@ module Canhelp
 
     req = Net::HTTP::Post.new(uri.path, headers)
     req.body = json_body.to_json
+
+    execute_http_request(uri, req)
+  end
+
+  def canvas_post_csv(url,token,file_path)
+    uri = URI(url)
+    headers = {
+      'Content-Type' => 'text/csv',
+      'Authorization' => "Bearer #{token}"
+    }
+    req = Net::HTTP::Post.new(uri.to_s,headers)
+    req.body = File.read(file_path)
 
     execute_http_request(uri, req)
   end

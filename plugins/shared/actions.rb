@@ -14,10 +14,11 @@ module Actions
     canvas_url = "https://#{subdomain}.instructure.com"
     token = get_token
 
-    canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}", token,
-    {
+    canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}",
+    token,
+      {
       task: state
-    }
+      }
     )
   end
 
@@ -34,20 +35,18 @@ module Actions
   #   url + "?state=#{options[:state]}" if options[:state]
   # end
 
-  def get_enrollment (subdomain, course_id, state)
+  #csv sis import
+  def create_sis_import(subdomain,file)
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
 
-    puts "Finding enrollments..."
-
-    course_enrollment = get_json_paginated(token,"#{canvas_url}/api/v1/courses/#{course_id}/enrollments")
-
-    puts "#{course_enrollment.count} enrollment(s) found."
-
-    course_enrollment
-
+    canvas_post_csv("#{canvas_url}/api/v1/accounts/self/sis_imports.json?import_type=instructure_csv",
+      token,
+      file
+    )
   end
 
+#get all sub_accounts in account specified
   def get_sub_accounts(subdomain,account_id)
     token = get_token
     subaccount_ids = get_all_pages(
@@ -56,14 +55,26 @@ module Actions
 
   end
 
+#get all courses in account id specified
   def get_courses (subdomain,subaccount_id)
     token = get_token
     courses = get_all_pages(
       token,
-      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students&state[]=available&state[]=claimed&state[]=created&state[]=completed"
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses"
+      #needs to change for pageviews include[]=teachers&include[]=total_students&state[]=available&state[]=completed"
     )
   end
 
+#get all section in course
+  def get_sections (subdomain,course_id)
+    token = get_token
+    courses = get_all_pages(
+      token,
+      "https://#{subdomain}.instructure.com/api/v1/courses/#{course_id}/sections"
+    )
+  end
+
+#create users
   def create_user(subdomain, prefix, count, type, state)
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -156,7 +167,7 @@ module Actions
         user_id: user_id,
         type: parse_type("#{type}"),
         enrollment_state: "#{state}",
-        self_enrolled: "#{self_enroll}"
+        self_enrolled: "#{self_enroll}",
         }
       })
 
@@ -179,6 +190,55 @@ module Actions
     else
       puts "\n"
       puts "#{checkmark}Created #{state} enrollment for user #{user_id} to course #{course_id}."
+      puts "\n"
+    end
+
+    #binding.pry
+
+    JSON.parse(response.body)
+
+  end
+
+
+  def create_section_enrollment(subdomain, section_id, user_id, type, state, self_enroll)
+    token = get_token
+    checkmark = "\u2713"
+    canvas_url = "https://#{subdomain}.instructure.com"
+    #random_state = ['active', 'invited', 'inactive'].sample(1)
+
+    print "Creating Section Enrollment..."
+
+    failures = []
+
+    response = canvas_post("#{canvas_url}/api/v1/sections/#{section_id}/enrollments", token,
+      {
+        enrollment: {
+        user_id: user_id,
+        type: parse_type("#{type}"),
+        enrollment_state: "#{state}",
+        self_enrolled: "#{self_enroll}",
+        }
+      })
+
+    if response.kind_of? Net::HTTPSuccess
+      print "."
+    else
+      failures << response
+      print "x"
+    end
+
+    if failures.length > 0
+      puts "Failures encountered"
+      failures.each { |resp|
+        puts "\n"
+        puts "#{resp.code}: #{resp.message}"
+        puts JSON.parse(resp.body)
+        puts "---------------------"
+        puts "\n"
+      }
+    else
+      puts "\n"
+      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to section #{section_id}."
       puts "\n"
     end
 
