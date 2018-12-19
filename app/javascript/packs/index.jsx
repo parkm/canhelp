@@ -21,6 +21,31 @@ import FlexItem from '@instructure/ui-layout/lib/components/Flex'
 import Link from '@instructure/ui-elements/lib/components/Link'
 import TextInput from '@instructure/ui-forms/lib/components/TextInput'
 
+let apiGet = (url) => {
+  let csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  return fetch('/api/internal/'+url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken,
+    },
+    credentials: 'include'
+  }).then(r => r.json());
+}
+
+let apiPost = (url, body) => {
+  let csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  return fetch('/api/internal/'+url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': csrfToken,
+    },
+    body: JSON.stringify(body),
+    credentials: 'include'
+  }).then(r => r.json());
+}
+
 class PluginCard extends React.Component {
   render() {
     return (
@@ -61,9 +86,17 @@ class Dashboard extends React.Component {
     },
     view: 'dashboard',
     currentPlugin: null,
+    submitting: false
   }
 
-  onPluginCardClick(plugin) {
+  componentWillMount() {
+    apiGet('plugins').then(data => {
+      this.setState({plugins: data.plugins});
+    });
+  }
+
+  onPluginCardClick(pluginFileName, plugin) {
+    plugin.fileName = pluginFileName;
     this.setState({
       view: 'plugin',
       currentPlugin: plugin,
@@ -76,23 +109,17 @@ class Dashboard extends React.Component {
       <div >
         <Heading level="h1" align="center">CanHelp Dashboard</Heading>
         <Flex>
-          {Object.values(this.state.plugins).map(plugin => {
+          {Object.entries(this.state.plugins).map(plugin => {
             return (
               <FlexItem>
                 <PluginCard
-                  title={plugin.name}
-                  description={plugin.description}
-                  onClick={e => this.onPluginCardClick(plugin)}
+                  title={plugin[1].name}
+                  description={plugin[1].description}
+                  onClick={e => this.onPluginCardClick(plugin[0], plugin[1])}
                 />
               </FlexItem>
             );
           })}
-          <FlexItem>
-            <PluginCard title="Create Courses" description="Create one or more Canvas Courses."/>
-          </FlexItem>
-          <FlexItem>
-            <PluginCard title="Create Assignments" description="Create one or more Canvas Assignments."/>
-          </FlexItem>
         </Flex>
       </div>
     );
@@ -121,6 +148,7 @@ class Dashboard extends React.Component {
             <Button
               variant="primary"
               onClick={e => this.onPluginSubmit(this.pluginArgRefs) }
+              disabled={this.state.submitting}
             >
               Submit
             </Button>
@@ -132,8 +160,17 @@ class Dashboard extends React.Component {
 
   onPluginSubmit(args) {
     let plugin = this.state.currentPlugin;
-    Object.entries(args).forEach((arg) => {
-      console.log(`${arg[0]} = ${arg[1].value}`)
+    let pluginArgs = {};
+    Object.entries(args).forEach((arg) => pluginArgs[arg[0]] = arg[1].value);
+
+    this.setState({submitting: true});
+
+    apiPost('plugins/execute', {
+      plugin_file: plugin.fileName,
+      plugin_method: plugin.method,
+      plugin_args: pluginArgs
+    }).then(data => {
+      this.setState({submitting: false});
     });
   }
 

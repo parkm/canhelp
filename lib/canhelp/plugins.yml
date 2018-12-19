@@ -1,0 +1,20 @@
+set_token:
+  method: 'set_token'
+  name: 'Set Token'
+  description: 'Set Canvas token for use with plugins.'
+  args: ['token']
+assignment_submission:
+  method: 'student_submission'
+  name: 'Create Student Submissions'
+  description: 'Creates student submissions.'
+  args: ['subdomain', 'course_id', 'assignment_id']
+create_user_and_enrollments:
+  method: 'create_user_and_enrollment'
+  name: 'Create Users'
+  description: 'Create users and enroll them in a course.'
+  args: ['subdomain', 'prefix', 'count', 'course_id', 'user_id', 'type', 'state', 'self_enroll']
+find_course:
+  method: 'find_course'
+  name: 'Find Course'
+  description: ''
+  args: ['canvas_url']
