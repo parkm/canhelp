@@ -12,53 +12,16 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import SendIcon from '@material-ui/icons/Send';
+import PluginPage from 'src/containers/PluginPage';
+import PluginCard from 'src/components/PluginCard';
 
-let apiGet = (url) => {
-  let csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-  return fetch('/api/internal/'+url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken,
-    },
-    credentials: 'include'
-  }).then(r => r.json());
-}
-
-let apiPost = (url, body) => {
-  let csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-  return fetch('/api/internal/'+url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken,
-    },
-    body: JSON.stringify(body),
-    credentials: 'include'
-  }).then(r => r.json());
-}
-
-class PluginCard extends React.Component {
-  render() {
-    return (
-      <Card
-      >
-        <CardHeader title={this.props.title} subheader={this.props.description}/>
-        <CardActions>
-          <Button color="primary" onClick={this.props.onClick}>{this.props.title}</Button>
-        </CardActions>
-      </Card>
-    );
-  }
-}
+import { apiGet, apiPost } from 'src/util.js';
 
 class Dashboard extends React.Component {
   state = {
     plugins: {},
     view: 'dashboard',
     currentPlugin: null,
-    submitting: false,
     fetchingPlugins: true
   }
 
@@ -77,7 +40,6 @@ class Dashboard extends React.Component {
       view: 'plugin',
       currentPlugin: plugin,
     });
-    this.pluginArgRefs = [];
   }
 
   renderDashboard() {
@@ -110,56 +72,10 @@ class Dashboard extends React.Component {
     );
   }
 
-  renderPlugin() {
-    let plugin = this.state.currentPlugin;
-    return (
-      <div>
-        <Button onClick={_ => this.setState({view: 'dashboard'})}>Back to Dashboard</Button>
-        <Typography align="center" variant="h4">{plugin.name}</Typography>
-        <Card
-        >
-          <CardContent>
-            {plugin.args.map(arg => {
-              return (
-                <TextField label={arg} ref={r => this.pluginArgRefs[arg] = r} />
-              );
-            })}
-          </CardContent>
-          <CardActions>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={e => this.onPluginSubmit(this.pluginArgRefs) }
-              disabled={this.state.submitting}
-            >
-              Submit <SendIcon/>
-            </Button>
-          </CardActions>
-        </Card>
-      </div>
-    );
-  }
-
-  onPluginSubmit(args) {
-    let plugin = this.state.currentPlugin;
-    let pluginArgs = {};
-    Object.entries(args).forEach((arg) => pluginArgs[arg[0]] = arg[1].value);
-
-    this.setState({submitting: true});
-
-    apiPost('plugins/execute', {
-      plugin_file: plugin.fileName,
-      plugin_method: plugin.method,
-      plugin_args: pluginArgs
-    }).then(data => {
-      this.setState({submitting: false});
-    });
-  }
-
   render() {
     switch(this.state.view) {
       case 'dashboard': return this.renderDashboard();
-      case 'plugin': return this.renderPlugin();
+      case 'plugin': return <PluginPage onBack={e => this.setState({view: 'dashboard'})} plugin={this.state.currentPlugin}/>;
     }
   }
 }
