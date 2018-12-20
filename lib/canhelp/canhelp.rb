@@ -1,6 +1,9 @@
 require 'net/http'
 require 'json'
 require 'faraday'
+require 'pry'
+require 'faker'
+require 'securerandom'
 
 module Canhelp
   def get_token
@@ -57,6 +60,18 @@ module Canhelp
 
     req = Net::HTTP::Post.new(uri.path, headers)
     req.body = json_body.to_json
+
+    execute_http_request(uri, req)
+  end
+
+  def canvas_post_csv(url,token,file_path)
+    uri = URI(url)
+    headers = {
+      'Content-Type' => 'text/csv',
+      'Authorization' => "Bearer #{token}"
+    }
+    req = Net::HTTP::Post.new(uri.to_s,headers)
+    req.body = File.read(file_path)
 
     execute_http_request(uri, req)
   end

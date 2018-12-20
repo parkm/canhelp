@@ -1,22 +1,23 @@
-require './canhelplib'
-require 'securerandom'
-require 'pry'
-require 'faker'
+require_relative '../canhelp'
 require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
-  include Canhelp
-  include Actions
+  extend Canhelp
+  extend Actions
+
+  #creates users and student and teacher enrollments in specified enrollment state
+  #can specify which course and section to add enrollments in
+  #can specify which user id to enroll
 
   def self.create_user_and_enrollment (
-    subdomain = prompt(:subdomain),
-    prefix = prompt(:prefix),
-    count= prompt(:count),
-    course_id = prompt(:course_id),
-    user_id = prompt(:user_id),
-    type = prompt(:type),
-    state = prompt(:state),
-    self_enroll = prompt(:self_enroll)
+    subdomain: prompt(),
+    prefix: prompt(),
+    count: prompt(),
+    course_id: prompt(),
+    user_id: prompt(),
+    type: prompt(),
+    state: prompt(),
+    self_enroll: prompt()
   )
 
     non_active = ['conclude', 'delete', 'inactivate', 'deactivate']

@@ -1,14 +1,14 @@
-require './canhelplib'
-require 'securerandom'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.create_assignments(
-    subdomain = prompt(:subdomain),
-    course_id = prompt(:course_id),
-    count = prompt(:count),
-    prefix = prompt(:prefix)
+    subdomain: prompt(),
+    course_id: prompt(),
+    count: prompt(),
+    prefix: prompt()
   )
     token = get_token
     current_count = 1

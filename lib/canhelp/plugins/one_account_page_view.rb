@@ -1,7 +1,8 @@
-require './canhelplib'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.one_account_page_view(
     subdomain = prompt(:subdomain),

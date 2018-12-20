@@ -5,16 +5,41 @@ set_token:
   args: ['token']
 assignment_submission:
   method: 'student_submission'
-  name: 'Create Student Submissions'
-  description: 'Creates student submissions.'
+  name: 'Create Submission'
+  description: 'Submit one or more assignments in a course.'
   args: ['subdomain', 'course_id', 'assignment_id']
 create_user_and_enrollments:
   method: 'create_user_and_enrollment'
-  name: 'Create Users'
-  description: 'Create users and enroll them in a course.'
+  name: 'Create Users and Enrollments'
+  description: 'Create users and enroll them into a course.'
   args: ['subdomain', 'prefix', 'count', 'course_id', 'user_id', 'type', 'state', 'self_enroll']
-find_course:
-  method: 'find_course'
-  name: 'Find Course'
-  description: ''
-  args: ['canvas_url']
+# find_course:
+#   method: 'find_course'
+#   name: 'Find Course'
+#   description: ''
+#   args: ['canvas_url']
+create_assignments:
+  method: 'create_assignments'
+  name: 'Create Assignments'
+  description: 'Create one or more assignments in a course.'
+  args: ['subdomain','course_id','count','prefix']
+copy_course:
+  method: 'copy_course'
+  name: 'Course Copy'
+  description: 'Copy a course to one or more courses.'
+  args: ['subdomain','source_course_id','course_start','course_end']
+course_last_activity:
+  method: 'course_last_activity'
+  name: 'Last Activity'
+  description: 'View total count of student enrollment with activity.'
+  args: ['subdomain','course_id','start_date','end_date']
+create_assignment_groups_for_course_range:
+  method: 'create_assignment_groups_for_course_range'
+  name: 'Assignment Groups'
+  description: 'Create assignment groups in specified course range'
+  args: ['subdomain','group_count','group_prefix','course_start','course_end']
+create_courses:
+  method: 'create_courses'
+  name: 'Create Courses'
+  description: 'Create one or more Canvas Courses'
+  args: ['subdomain','account_id','term','count','prefix']

@@ -1,8 +1,9 @@
-require './canhelplib'
-require 'securerandom'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
+#require 'securerandom'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.create_sections(
     subdomain = prompt(:subdomain),

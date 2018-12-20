@@ -1,15 +1,15 @@
-require './canhelplib'
-require 'securerandom'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.create_courses(
-    subdomain = prompt(:subdomain),
-    account_id = prompt(:account_id),
-    term = prompt(:term_id),
-    count = prompt(:count),
-    prefix = prompt(:prefix)
+    subdomain: prompt(),
+    account_id: prompt(),
+    term: prompt(),
+    count: prompt(),
+    prefix: prompt()
   )
     token = get_token
     current_count = 1

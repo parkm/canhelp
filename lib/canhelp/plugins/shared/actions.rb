@@ -1,10 +1,12 @@
-require '././canhelplib'
+require_relative '../../canhelp'
 require 'securerandom'
 require 'pry'
 require 'faker'
+require 'date'
+require 'csv'
 
 module Actions
-  include Canhelp
+  extend Canhelp
 
   # Update course enrollments using token, canvas_url, course_id, enrollment_id, and state
   # random_state = ['conclude', 'delete', 'inactivate', 'deactivate'].sample(1)
@@ -14,10 +16,11 @@ module Actions
     canvas_url = "https://#{subdomain}.instructure.com"
     token = get_token
 
-    canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}", token,
-    {
+    canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}",
+    token,
+      {
       task: state
-    }
+      }
     )
   end
 
@@ -34,20 +37,18 @@ module Actions
   #   url + "?state=#{options[:state]}" if options[:state]
   # end
 
-  def get_enrollment (subdomain, course_id, state)
+  #csv sis import
+  def create_sis_import(subdomain,file)
     token = get_token
-    canvas_url = "#{subdomain}"
+    canvas_url = "https://#{subdomain}.instructure.com"
 
-    puts "Finding enrollments..."
-
-    course_enrollment = get_json_paginated(token,"#{canvas_url}/api/v1/courses/#{course_id}/enrollments")
-
-    puts "#{course_enrollment.count} enrollment(s) found."
-
-    course_enrollment
-
+    canvas_post_csv("#{canvas_url}/api/v1/accounts/self/sis_imports.json?import_type=instructure_csv",
+      token,
+      file
+    )
   end
 
+#get all sub_accounts in account specified
   def get_sub_accounts(subdomain,account_id)
     token = get_token
     subaccount_ids = get_all_pages(
@@ -56,15 +57,17 @@ module Actions
 
   end
 
+#get all courses in account id specified
   def get_courses (subdomain,subaccount_id)
     token = get_token
     courses = get_all_pages(
       token,
-      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses?include[]=teachers&include[]=total_students"
-      # &state[]=available&state[]=completed"
+      "https://#{subdomain}.instructure.com/api/v1/accounts/#{subaccount_id}/courses"
+      #needs to change for pageviews include[]=teachers&include[]=total_students&state[]=available&state[]=completed"
     )
   end
 
+#get all section in course
   def get_sections (subdomain,course_id)
     token = get_token
     courses = get_all_pages(
@@ -73,6 +76,20 @@ module Actions
     )
   end
 
+#create_submissions
+def create_submission(token,subdomain,course_id,assignment_id,user_id)
+  canvas_url = "https://#{subdomain}.instructure.com"
+  canvas_post("#{canvas_url}/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions", token,
+    {
+    as_user_id: "#{user_id}",
+    submission: {
+      submission_type: "online_text_entry",
+      body: "This is my submission - YAY!"
+    }
+  })
+end
+
+#create users
   def create_user(subdomain, prefix, count, type, state)
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -149,7 +166,7 @@ module Actions
     user_id
   end
 
-  def create_enrollment(subdomain, course_id, section_id, user_id, type, state, self_enroll)
+  def create_enrollment(subdomain, course_id, user_id, type, state, self_enroll)
     token = get_token
     checkmark = "\u2713"
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -166,7 +183,6 @@ module Actions
         type: parse_type("#{type}"),
         enrollment_state: "#{state}",
         self_enrolled: "#{self_enroll}",
-        course_section_id: section_id
         }
       })
 
@@ -237,11 +253,9 @@ module Actions
       }
     else
       puts "\n"
-      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to course #{course_id}."
+      puts "#{checkmark}Created #{state} enrollment for user #{user_id} to section #{section_id}."
       puts "\n"
     end
-
-    #binding.pry
 
     JSON.parse(response.body)
 

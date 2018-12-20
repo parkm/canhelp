@@ -1,8 +1,9 @@
-require './canhelplib'
-require 'csv'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
+#require 'csv'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.get_teacher_count(
     canvas_url=prompt(:canvas_url),

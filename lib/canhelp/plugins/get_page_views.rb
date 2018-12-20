@@ -1,7 +1,8 @@
-require './canhelplib'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.get_page_views_per_course(
     subdomain = prompt(:subdomain),

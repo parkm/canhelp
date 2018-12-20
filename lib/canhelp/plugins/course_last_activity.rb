@@ -1,14 +1,17 @@
-require './canhelplib'
-require 'date'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
+
+#date example: 2018-04-16T00:00:00Z, 2018-04-30T00:00:00Z
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.course_last_activity(
-    subdomain = prompt(:subdomain),
-    course_id = prompt(:course_id)
+    subdomain: prompt(),
+    course_id: prompt(),
+    start_date: prompt(),
+    end_date: ()
   )
-
     token = get_token
 
     enrollments = get_json_paginated(
@@ -40,8 +43,8 @@ module CanhelpPlugin
 
       student_last_activity_dates.each do |activity|
         d = DateTime.iso8601(activity)
-        from = DateTime.iso8601('2018-04-16T00:00:00Z')
-        to = DateTime.iso8601('2018-04-30T00:00:00Z')
+        from = DateTime.iso8601(start_date)
+        to = DateTime.iso8601(end_date)
 
         in_range = d > from && d < to
         out_of_range = d < from || d > to
@@ -59,7 +62,7 @@ module CanhelpPlugin
     end
 
     puts
-    puts "- Total count of users with activity between #{to} - #{from}: #{with_activity.count}"
+    puts "Total count of users with activity between #{to} - #{from}: #{with_activity.count}"
     puts
 
   end

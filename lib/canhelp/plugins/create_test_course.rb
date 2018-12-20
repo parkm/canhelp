@@ -1,7 +1,8 @@
-require './canhelplib'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.create_test_course(
     subdomain = prompt(:subdomain),
@@ -12,7 +13,7 @@ module CanhelpPlugin
     token = get_token
     checkmark = "\u2713"
 
-    response = canvas_post("https://#{subdomain}.instructure.com/api/v1/accounts/1/courses", token, {
+    response = canvas_post("https://#{subdomain}.instructure.com/api/v1/accounts/self/courses", token, {
       course: {
         name: course_name,
         course_code: course_name.split(' ').join('_'),

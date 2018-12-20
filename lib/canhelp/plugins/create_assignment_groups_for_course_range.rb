@@ -1,13 +1,22 @@
-require './canhelplib'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
 # create_assignment_groups_for_course_range https://pmiller.instructure.com 6 mygroups 50 100
 # creates 6 assignment groups for courses 50, 51, 52 ... 100
 
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
-  def self.create_assignment_groups_for_course_range(canvas_url, group_count, group_prefix, course_start, course_end)
+  def self.create_assignment_groups_for_course_range(
+    subdomain: prompt(),
+    group_count: prompt() ,
+    group_prefix: prompt(),
+    course_start: prompt(),
+    course_end: prompt()
+  )
+
     token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
 
     group_weight = 100 / group_count.to_i
     (course_start..course_end).each do |course_id|

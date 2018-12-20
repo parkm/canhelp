@@ -1,30 +1,14 @@
-require './canhelplib'
-require 'pry'
-module CanhelpPlugin
-  include Canhelp
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
 
-  def create_submission(
-      token,
-      subdomain = prompt(:subdomain),
-      course_id = prompt(:course_id),
-      assignment_id = prompt(:assignment_id),
-      user_id = prompt(:user_id)
-      )
-    canvas_url = "https://#{subdomain}.instructure.com"
-    canvas_post("#{canvas_url}/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions", token,
-      {
-      as_user_id: "#{user_id}",
-      submission: {
-        submission_type: "online_text_entry",
-        body: "This is my submission - YAY!"
-      }
-    })
-  end
+module CanhelpPlugin
+  extend Canhelp
+  extend Actions
 
   def self.student_submission(
-    subdomain = prompt(:subdomain),
-    course_id = prompt(:course_id),
-    assignment_id = prompt(:assignment_id)
+    subdomain: prompt(),
+    course_id: prompt(),
+    assignment_id: prompt()
   )
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"
@@ -46,7 +30,6 @@ module CanhelpPlugin
 
     else
       user_ids.each do |user_id|
-        binding.pry
         result = create_submission(token,subdomain, course_id, assignment_id, user_id)
         puts "user #{user_id} submitted to assignment #{assignment_id}"
       end

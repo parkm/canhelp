@@ -1,12 +1,14 @@
-require './canhelplib'
+require_relative '../canhelp'
+require_relative 'shared/actions.rb'
+
 module CanhelpPlugin
-  include Canhelp
+  extend Canhelp
 
   def self.copy_course(
-    subdomain = prompt(:subdomain),
-    source_course_id = prompt(:source_course_id),
-    course_start = prompt(:course_start),
-    course_end = prompt(:course_end)
+    subdomain: prompt(),
+    source_course_id: prompt(),
+    course_start: prompt(),
+    course_end: prompt()
   )
     token = get_token
 
