@@ -5,10 +5,10 @@ module CanhelpPlugin
   extend Canhelp
 
   def self.one_account_page_view(
-    subdomain = prompt(:subdomain),
-    account_id = prompt(:account_id),
-    start_time = prompt(:start_time),
-    end_time = prompt(:end_time)
+    subdomain: prompt(),
+    account_id: prompt(),
+    start_time: prompt(),
+    end_time: prompt()
   )
 
     token = get_token

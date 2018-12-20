@@ -6,11 +6,12 @@ module CanhelpPlugin
   extend Canhelp
 
   def self.get_teacher_count(
-    canvas_url=prompt(:canvas_url),
-    account_id=prompt(:account_id),
-    teacher_role_id = prompt(:teacher_role_id)
+    subdomain: prompt(),
+    account_id: prompt(),
+    teacher_role_id: prompt()
   )
     token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
     subaccount_ids = get_json_paginated(token, "#{canvas_url}/api/v1/accounts/#{account_id}/sub_accounts", "recursive=true").map{|s| s['id']}
     subaccount_ids << account_id
 

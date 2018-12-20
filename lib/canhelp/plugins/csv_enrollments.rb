@@ -6,6 +6,7 @@ require_relative 'shared/actions_csv.rb'
 
 module CanhelpPlugin
   extend Canhelp
+  extend Actions
 
   #specify how many teachers and students
   #create user per section
@@ -13,16 +14,16 @@ module CanhelpPlugin
   #this will override any previous CSVs
 
   def self.csv_enrollments(
-    subdomain = prompt(:subdomain),
-    account_id = prompt(:account_id),
-    teacher_count = prompt(:teacher_count),
-    student_count = prompt(:student_count),
-    ta_count = prompt(:teacher_count),
-    designer_count = prompt(:designer_count),
-    observer_count = prompt(:observer_count),
-    prefix = prompt(:prefix),
-    state = prompt(:state),
-    sis_import = prompt(:sis_import_true_or_false)
+    subdomain: prompt(),
+    account_id:  prompt(),
+    teacher_count: prompt(),
+    student_count: prompt(),
+    ta_count: prompt(),
+    designer_count: prompt(),
+    observer_count: prompt(),
+    prefix: prompt(),
+    state: prompt(),
+    sis_import: prompt()
   )
 
     token = get_token

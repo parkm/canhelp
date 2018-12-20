@@ -3,12 +3,13 @@ require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
   extend Canhelp
+  extend Actions
 
   def self.get_page_views_per_course(
-    subdomain = prompt(:subdomain),
-    account_id = prompt(:account_id),
-    start_time = prompt(:start_time),
-    end_time = prompt(:end_time)
+    subdomain: prompt(),
+    account_id: prompt(),
+    start_time: prompt(),
+    end_time: prompt()
   )
 
     token = get_token

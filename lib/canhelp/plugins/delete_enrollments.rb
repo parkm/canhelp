@@ -1,6 +1,5 @@
 require_relative '../canhelp'
 require_relative 'shared/actions.rb'
-#require 'securerandom'
 
 module CanhelpPlugin
   extend Canhelp
@@ -13,8 +12,8 @@ module CanhelpPlugin
   end
 
   def self.remove_enrollment(
-    subdomain = prompt(:subdomain),
-    user_id = prompt(:user_id)
+    subdomain: prompt(),
+    user_id: prompt()
   )
     token = get_token
     canvas_url = "https://#{subdomain}.instructure.com"

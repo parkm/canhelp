@@ -41,22 +41,22 @@ module CanhelpPlugin
 
       student_last_activity_dates << student_activity
 
-      student_last_activity_dates.each do |activity|
-        d = DateTime.iso8601(activity)
-        from = DateTime.iso8601(start_date)
-        to = DateTime.iso8601(end_date)
-
-        in_range = d > from && d < to
-        out_of_range = d < from || d > to
-
+        student_last_activity_dates.each do |activity|
         if activity == nil || out_of_range || !in_range
           puts activity
           without_activity << activity
         elsif
+          d = DateTime.iso8601(activity)
+          from = DateTime.iso8601(start_date)
+          puts from
+          to = DateTime.iso8601(end_date)
+
+          in_range = d > from && d < to
+          out_of_range = d < from || d > to
+
           d.between?(from,to)
           puts d
           with_activity << activity
-
         end
       end
     end

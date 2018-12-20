@@ -6,11 +6,11 @@ module CanhelpPlugin
   extend Canhelp
 
   def self.create_sections(
-    subdomain = prompt(:subdomain),
-    course_start = prompt(:course_start),
-    course_end = prompt(:course_end),
-    count = prompt(:count),
-    prefix = prompt(:prefix)
+    subdomain: prompt(),
+    course_start: prompt(),
+    course_end: prompt(),
+    count: prompt(),
+    prefix: prompt()
   )
     token = get_token
     current_count = 1
@@ -18,13 +18,13 @@ module CanhelpPlugin
     failures = []
     checkmark = "\u2713"
 
-
     (course_start..course_end).each do |course_id|
       count.to_i.times do
+        section_sis_id = "#{prefix}_sis_#{course_id}_section_#{current_count}"
         response = canvas_post("#{canvas_url_api}/courses/#{course_id}/sections", token, {
           course_section: {
             name: "#{prefix} #{course_id} #{current_count}",
-            sis_section_id: "#{prefix}_sis_#{course_id}_section_#{current_count}"
+            sis_section_id: section_sis_id.gsub(/\s+/, "")
             #integration_id: "",
             #start_at: "",
             #end_at: "",

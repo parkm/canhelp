@@ -16,13 +16,14 @@ module CanhelpPlugin
     canvas_url_api = "https://#{subdomain}.instructure.com/api/v1"
     failures = []
     checkmark = "\u2713"
+    course_sis_id = "#{prefix}_sis_#{current_count}"
 
     count.to_i.times do
       response = canvas_post("#{canvas_url_api}/accounts/#{account_id}/courses", token, {
         course: {
           name: "#{prefix} #{current_count}",
           course_code: "#{prefix} Course Code #{current_count}",
-          sis_course_id: "#{prefix}_sis_#{current_count}",
+          sis_course_id: course_sis_id.gsub(/\s+/, ""),
           term_id: "#{term}"
         },
         offer: true, #publish or unpublish

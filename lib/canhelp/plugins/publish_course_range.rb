@@ -5,12 +5,12 @@ module CanhelpPlugin
   extend Canhelp
 
   def self.publish_course_range(
-     subdomain = prompt(:subdomain),
-     startId = prompt(:startId),
-     endId = prompt(:endId)
+     subdomain: prompt(),
+     start_course_id: prompt(),
+     end_course_id: prompt()
    )
     canvas_url = "https://#{subdomain}.instructure.com"
-    course_ids = (startId..endId).to_a.map do |id|
+    course_ids = (start_course_id..end_course_id).to_a.map do |id|
       id.to_s
       canvas_put("#{canvas_url}/api/v1/courses/#{id}", get_token, {
         course:{

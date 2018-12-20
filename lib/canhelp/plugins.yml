@@ -3,26 +3,16 @@ set_token:
   name: 'Set Token'
   description: 'Set Canvas token for use with plugins.'
   args: ['token']
-assignment_submission:
-  method: 'student_submission'
-  name: 'Create Submission'
-  description: 'Submit one or more assignments in a course.'
-  args: ['subdomain', ['course_id', 'int'], ['assignment_id', 'int']]
-create_user_and_enrollments:
-  method: 'create_user_and_enrollment'
-  name: 'Create Users and Enrollments'
-  description: 'Create users and enroll them into a course.'
-  args: ['subdomain', 'prefix', ['count', 'int'], ['course_id', 'int'], ['user_id', 'int'], 'type', 'state', ['self_enroll', 'bool']]
 # find_course:
 #   method: 'find_course'
 #   name: 'Find Course'
 #   description: ''
 #   args: ['canvas_url']
-create_assignments:
-  method: 'create_assignments'
-  name: 'Create Assignments'
-  description: 'Create one or more assignments in a course.'
-  args: ['subdomain', ['course_id', 'int'], ['count', 'int'], 'prefix']
+assignment_submission:
+  method: 'student_submission'
+  name: 'Create Submission'
+  description: 'Submit one or more assignments in a course.'
+  args: ['subdomain', ['course_id', 'int'], ['assignment_id', 'int']]
 copy_course:
   method: 'copy_course'
   name: 'Course Copy'
@@ -38,8 +28,83 @@ create_assignment_groups_for_course_range:
   name: 'Assignment Groups'
   description: 'Create assignment groups in specified course range'
   args: ['subdomain', ['group_count', 'int'], 'group_prefix', ['course_start', 'date'], ['course_end', 'date']]
+create_assignments:
+  method: 'create_assignments'
+  name: 'Create Assignments'
+  description: 'Create one or more assignments in a course.'
+  args: ['subdomain', ['course_id', 'int'], ['count', 'int'], 'prefix']
 create_courses:
   method: 'create_courses'
   name: 'Create Courses'
   description: 'Create one or more Canvas Courses'
   args: ['subdomain', ['account_id', 'int'], 'term', ['count', 'int'], 'prefix']
+create_sections:
+  method: 'create_sections'
+  name: 'Create Sections'
+  description: 'Create one or more Canvas Sections'
+  args: ['subdomain', ['course_start', 'int'], ['course_end','int'], ['count', 'int'], 'prefix']
+create_test_course:
+  method: 'create_test_course'
+  name: 'Quick Course and Enrollment'
+  description: 'Create one course with enrollments.'
+  args: ['subdomain', 'course_name', 'user_prefix']
+create_user_and_enrollments:
+  method: 'create_user_and_enrollment'
+  name: 'Create Users and Enrollments'
+  description: 'Create users and enroll them into a course.'
+  args: ['subdomain', 'prefix', ['count', 'int'], ['course_id', 'int'], ['user_id', 'int'], 'type', 'state', ['self_enroll', 'bool']]
+csv_enrollments:
+  method: 'csv_enrollments'
+  name: 'Create Users and Enrollments CSV'
+  description: 'Create Users and Enrollments CSV for SIS Imports.'
+  args: ['subdomain', ['account_id', 'int'], ['teacher_count', 'int'], ['student_count', 'int'], ['ta_count', 'int'], ['designer_count', 'int'], ['observer_count', 'int'], 'prefix', 'state', ['sis_import', 'bool']]
+csv_users:
+  method: 'csv_users'
+  name: 'Create Users CSV'
+  description: 'Create Users CSV for SIS Imports.'
+  args: ['subdomain', ['user_count', 'int'],'prefix', 'user_type', 'state', ['sis_import', 'bool']]
+# delete_enrollments:
+#   method: 'remove_enrollment'
+#   name: 'Delete Enrollments'
+#   description: 'Delete enrollment(s) of a user.'
+#   args: ['subdomain', ['user_id', 'int']]
+enrollment_blast:
+  method: 'enrollment_blast'
+  name: 'Enrollment Blast'
+  description: 'Create users and enrollments in each state.'
+  args: ['subdomain', 'prefix', ['teacher_count_per_state', 'int'], ['student_count_per_state', 'int'],['course_id', 'int']]
+enrollment_range:
+  method: 'enrollment_range'
+  name: 'Enrollment Range'
+  description: 'Create users and enrollments in specified account.'
+  args: ['subdomain', ['subaccount_id', 'int'], 'prefix', ['teacher_count', 'int'], ['student_count', 'int'],'state']
+get_page_views:
+  method: 'get_page_views_per_course'
+  name: 'User PageViews'
+  description: 'See User PageViews in a Canvas Account.'
+  args: ['subdomain', ['account_id', 'int'], ['start_time', 'date'], ['end_time', 'date']]
+get_student_count:
+  method: 'get_student_count'
+  name: 'Student Count'
+  description: 'See how many students are in a Canvas Account/Sub-account.'
+  args: ['subdomain', ['account_id', 'int'], ['student_role_id', 'int']]
+get_teacher_count:
+  method: 'get_teacher_count'
+  name: 'Teacher Count'
+  description: 'See how many teachers are in a Canvas Account/Sub-account.'
+  args: ['subdomain', ['account_id', 'int'], ['teacher_role_id', 'int']]
+grade_all_users_in_course:
+  method: 'grade_all_old'
+  name: 'Grade all users in the course.'
+  description: 'Give a 1-10 assignment grade to all users in the course.'
+  args: ['subdomain', ['course_id', 'int'],['assignment_id', 'int']]
+# one_account_page_view:
+#   method: 'one_account_page_view'
+#   name: ''
+#   description: ''
+#   args: ['subdomain', ['account_id', 'int'], ['start_time', 'date'],['end_time', 'date']]
+publish_course_range:
+  method: 'publish_course_range'
+  name: 'Publish Course Range'
+  description: 'Publish multiple courses that fall under a range.'
+  args: ['subdomain', ['start_course_id', 'int'], ['end_course_id', 'int']]

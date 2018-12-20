@@ -11,11 +11,11 @@ module CanhelpPlugin
   #can specify which course to add enrollments in
 
   def self.enrollment_blast(
-    subdomain = prompt(:subdomain),
-    prefix = prompt(:prefix),
-    teacher_count_per_state = prompt(:teacher_count),
-    student_count_per_state = prompt(:student_count),
-    course_id = prompt(:course_id)
+    subdomain: prompt(),
+    prefix: prompt(),
+    teacher_count_per_state: prompt(),
+    student_count_per_state: prompt(),
+    course_id: prompt()
   )
 
   # student_total_count_per_state = 1

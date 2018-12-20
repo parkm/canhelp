@@ -89,6 +89,13 @@ def create_submission(token,subdomain,course_id,assignment_id,user_id)
   })
 end
 
+def grade_submission(token, canvas_url, course_id, assignment_id, user_id, grade)
+  canvas_put("#{canvas_url}/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions/#{user_id}", token, {
+    submission: {
+      posted_grade: grade
+    }
+  })
+end
 #create users
   def create_user(subdomain, prefix, count, type, state)
     token = get_token

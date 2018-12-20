@@ -6,17 +6,18 @@ require_relative 'shared/actions_csv.rb'
 
 module CanhelpPlugin
   extend Canhelp
+  extend Actions
 
   # create users.csv
   # specify true or false to uplaod csv (sis import api)
 
   def self.csv_users(
-    subdomain = prompt(:subdomain),
-    user_count = prompt(:user_count),
-    prefix = prompt(:prefix),
-    user_type = prompt(:user_type),
-    state = prompt(:state),
-    sis_import = prompt(:sis_import_true_or_false)
+    subdomain: prompt(),
+    user_count: prompt(),
+    prefix: prompt(),
+    user_type: prompt(),
+    state: prompt(),
+    sis_import: prompt()
   )
     token = get_token
 

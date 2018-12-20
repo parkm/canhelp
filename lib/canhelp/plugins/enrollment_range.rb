@@ -12,12 +12,12 @@ module CanhelpPlugin
   #for each section, add enrollments based on teacher_count and student_count
 
   def self.enrollment_range(
-      subdomain = prompt(:subdomain),
-      subaccount_id = prompt(:subaccount_id),
-      prefix = prompt(:prefix),
-      teacher_count = prompt(:teacher_count),
-      student_count = prompt(:student_count),
-      state = prompt(:state)
+      subdomain: prompt(),
+      subaccount_id: prompt(),
+      prefix: prompt(),
+      teacher_count: prompt(),
+      student_count: prompt(),
+      state: prompt()
     )
 
     token = get_token
