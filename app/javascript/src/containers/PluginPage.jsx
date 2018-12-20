@@ -10,6 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import SendIcon from '@material-ui/icons/Send';
+import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 
 import { apiGet, apiPost } from 'src/util.js';
 
@@ -63,7 +64,7 @@ export default class PluginPage extends React.Component {
     let plugin = this.props.plugin;
     return (
       <div>
-        <Button onClick={this.props.onBack}>Back to Dashboard</Button>
+        <Button onClick={this.props.onBack}><ArrowBackIcon/> Back to Dashboard</Button>
         <Typography align="center" variant="h4">{plugin.name}</Typography>
         <Card>
           <CardContent>

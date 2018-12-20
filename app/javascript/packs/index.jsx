@@ -54,10 +54,10 @@ class Dashboard extends React.Component {
             <CircularProgress size={80}/>
           </Typography>
         ) : (
-          <Grid container spacing={24}>
+          <Grid container spacing={24} sm={12}>
             {Object.entries(this.state.plugins).map(plugin => {
               return (
-                <Grid item>
+                <Grid item sm={3}>
                   <PluginCard
                     title={plugin[1].name}
                     description={plugin[1].description}
