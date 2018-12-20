@@ -8,6 +8,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import SendIcon from '@material-ui/icons/Send';
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
@@ -28,7 +30,7 @@ export default class PluginPage extends React.Component {
   onPluginSubmit(args) {
     let plugin = this.props.plugin;
     let pluginArgs = {};
-    Object.entries(args).forEach((arg) => pluginArgs[arg[0]] = arg[1].value);
+    Object.entries(args).forEach((arg) => pluginArgs[arg[0]] = (arg[1].checked || arg[1].value).toString());
 
     this.setState({
       submitting: true,
@@ -60,6 +62,30 @@ export default class PluginPage extends React.Component {
     });
   }
 
+  renderArgType(type, argName) {
+    let inputRef = (ref) => this.pluginArgRefs[argName] = ref;
+    switch(type) {
+      case 'bool':
+        return (
+          <FormControlLabel
+            control={
+              <Switch
+                value={false}
+              />
+            }
+            label={argName}
+            inputRef={inputRef}
+          />
+        );
+      case 'int':
+        return <TextField fullWidth type="number" label={argName} inputRef={inputRef} />
+      case 'date':
+        return <TextField fullWidth defaultValue={(new Date()).toISOString()} label={argName} inputRef={inputRef} />
+      default:
+        return <TextField fullWidth label={argName} inputRef={inputRef} />
+    }
+  }
+
   render() {
     let plugin = this.props.plugin;
     return (
@@ -70,9 +96,15 @@ export default class PluginPage extends React.Component {
           <CardContent>
             <Grid container spacing={24} sm={12}>
               {plugin.args.map(arg => {
+                let argName = arg;
+                let argType = 'text';
+                if (Array.isArray(arg)) {
+                  argName = arg[0];
+                  argType = arg[1];
+                }
                 return (
                   <Grid item sm={3}>
-                    <TextField fullWidth label={arg} inputRef={r => this.pluginArgRefs[arg] = r} />
+                    {this.renderArgType(argType, argName)}
                   </Grid>
                 );
               })}
