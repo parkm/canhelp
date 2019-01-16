@@ -16,9 +16,9 @@ module CanhelpPlugin
     canvas_url_api = "https://#{subdomain}.instructure.com/api/v1"
     failures = []
     checkmark = "\u2713"
-    course_sis_id = "#{prefix}_sis_#{current_count}"
 
     count.to_i.times do
+      course_sis_id = "#{prefix}_sis_#{current_count}"
       response = canvas_post("#{canvas_url_api}/accounts/#{account_id}/courses", token, {
         course: {
           name: "#{prefix} #{current_count}",

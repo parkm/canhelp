@@ -37,6 +37,27 @@ module Actions
   #   url + "?state=#{options[:state]}" if options[:state]
   # end
 
+  #get user enrollments
+  def get_user_enrollments(subdomain,user_id,state)
+    token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
+    get_all_pages(token,
+      "#{canvas_url}/api/v1/users/#{user_id}/enrollments?state[]=#{state}"
+    )
+  end
+
+  #Add course to favorites
+  def add_course_favorite(subdomain,course_id,user_id)
+    token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
+    response =
+    canvas_post("#{canvas_url}/api/v1/users/self/favorites/courses/#{course_id}", token,{
+      as_user_id: "#{user_id}"
+      })
+    puts "#{canvas_url}/api/v1/users/self/favorites/courses/#{course_id}?as_user_id=#{user_id}"
+    puts response.body
+  end
+
   #csv sis import
   def create_sis_import(subdomain,file)
     token = get_token

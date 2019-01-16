@@ -17,7 +17,7 @@ copy_course:
   method: 'copy_course'
   name: 'Course Copy'
   description: 'Copy a course to one or more courses.'
-  args: ['subdomain', ['source_course_id', 'int'], ['course_start', 'date'], ['course_end', 'date']]
+  args: ['subdomain', ['source_course_id', 'int'], ['course_start','int'], ['course_end', 'int']]
 course_last_activity:
   method: 'course_last_activity'
   name: 'Last Activity'
@@ -95,7 +95,7 @@ get_teacher_count:
   args: ['subdomain', ['account_id', 'int'], ['teacher_role_id', 'int']]
 grade_all_users_in_course:
   method: 'grade_all_old'
-  name: 'Grade all users in the course.'
+  name: 'Grade all users in the course'
   description: 'Give a 1-10 assignment grade to all users in the course.'
   args: ['subdomain', ['course_id', 'int'],['assignment_id', 'int']]
 # one_account_page_view:
@@ -108,3 +108,8 @@ publish_course_range:
   name: 'Publish Course Range'
   description: 'Publish multiple courses that fall under a range.'
   args: ['subdomain', ['start_course_id', 'int'], ['end_course_id', 'int']]
+favorite_course:
+  method: 'favorite_course'
+  name: 'Favorite Course'
+  description: 'Add all course as a Favorite'
+  args: ['subdomain', ['user_id', 'int'], ['state']]
