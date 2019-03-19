@@ -208,7 +208,7 @@ end
       {
         enrollment: {
         user_id: user_id,
-        type: parse_type("#{type}"),
+        role: parse_type("#{type}"),
         enrollment_state: "#{state}",
         self_enrolled: "#{self_enroll}",
         }
@@ -236,8 +236,6 @@ end
       puts "\n"
     end
 
-    #binding.pry
-
     JSON.parse(response.body)
 
   end
@@ -257,7 +255,7 @@ end
       {
         enrollment: {
         user_id: user_id,
-        type: parse_type("#{type}"),
+        role: parse_type("#{type}"),
         enrollment_state: "#{state}",
         self_enrolled: "#{self_enroll}",
         }
