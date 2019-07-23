@@ -7,8 +7,10 @@ require 'securerandom'
 
 module Canhelp
   def get_token
-    File.open('.token').read
+    @token ||= File.open('.token').read
   end
+
+  alias_method :token, :get_token
 
   def get_request(token, url)
     conn = Faraday.new(url)

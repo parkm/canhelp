@@ -5,6 +5,7 @@ require_relative 'shared/actions.rb'
 
 module CanhelpPlugin
   extend Canhelp
+  extend Actions
 
   #creates users and student and teacher enrollments in specified account
   #can only specify enrollment state job

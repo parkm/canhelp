@@ -15,6 +15,7 @@ module CanhelpPlugin
     prefix: prompt(),
     teacher_count_per_state: prompt(),
     student_count_per_state: prompt(),
+    observer_count_per_state: prompt(),
     course_id: prompt()
   )
 
@@ -22,6 +23,8 @@ module CanhelpPlugin
   # teacher_total_count_per_state = 1
     teacher_count_per_state = 1 if teacher_count_per_state.empty?
     student_count_per_state = 1 if student_count_per_state.empty?
+    observer_count_per_state = 1 if observer_count_per_state.empty?
+
 
     states = ['active', 'invited', 'delete', 'conclude', 'inactive']
 
@@ -30,8 +33,10 @@ module CanhelpPlugin
     states.each do |state|
       student_enrollment_list = []
       teacher_enrollment_list = []
+      observer_enrollment_list = []
       student_type = 's'
       teacher_type = 't'
+      observer_type = 'o'
       is_non_active = non_active.include? state
 
       if is_non_active
@@ -82,6 +87,25 @@ module CanhelpPlugin
         )
       end
 
+      created_observer_ids = create_user(
+        subdomain,
+        prefix,
+        observer_count_per_state,
+        observer_type,
+        state
+      )
+
+      created_observer_ids.each do |observer|
+        observer_enrollment_list << create_enrollment(
+          subdomain,
+          course_id,
+          observer,
+          observer_type,
+          effective_state,
+          self_enroll=nil
+        )
+      end
+
 
       if is_non_active
 
@@ -106,6 +130,18 @@ module CanhelpPlugin
             subdomain,
             teacherenrollment['course_id'],
             teacherenrollment['id'],
+            state
+          )
+          print "."
+        end
+
+        puts "Setting ObserverEnrollment(s) to #{effective_state}..."
+
+        observer_enrollment_list.each do |observerenrollment|
+          update_enrollment(
+            subdomain,
+            observerenrollment['course_id'],
+            observerenrollment['id'],
             state
           )
           print "."

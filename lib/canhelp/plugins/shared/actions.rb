@@ -14,8 +14,6 @@ module Actions
 
   def update_enrollment(subdomain, course_id, enrollment_id, state)
     canvas_url = "https://#{subdomain}.instructure.com"
-    token = get_token
-
     canvas_delete("#{canvas_url}/api/v1/courses/#{course_id}/enrollments/#{enrollment_id}",
     token,
       {
@@ -43,6 +41,15 @@ module Actions
     canvas_url = "https://#{subdomain}.instructure.com"
     get_all_pages(token,
       "#{canvas_url}/api/v1/users/#{user_id}/enrollments?state[]=#{state}"
+    )
+  end
+
+  #get users in account
+  def get_users_in_account(subdomain,account_id)
+    token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
+    get_all_pages(token,
+      "#{canvas_url}/api/v1/accounts/#{account_id}/users"
     )
   end
 
@@ -110,6 +117,112 @@ def create_submission(token,subdomain,course_id,assignment_id,user_id)
   })
 end
 
+#get all assignment groups
+def get_assignment_groups(token,subdomain,course_id)
+  canvas_url = "https://#{subdomain}.instructure.com"
+  assignment_groups = get_json_paginated(
+    token,
+    "https://#{subdomain}.instructure.com/api/v1/courses/#{course_id}/assignment_groups"
+  )
+end
+
+#create assignments
+def create_assignment(token,subdomain,course_id,count,prefix,group_id,submission)
+  canvas_url = "https://#{subdomain}.instructure.com"
+  failures = []
+  checkmark = "\u2713"
+  current_count = 1
+
+  count.to_i.times do |i|
+    current_count = i + 1
+    response = canvas_post("#{canvas_url}/api/v1/courses/#{course_id}/assignments", token, {
+      assignment: {
+        name: "#{prefix} #{current_count} - #{submission}",
+        submission_types: submission,
+        points_possible: 10,
+        grading_type:"points",
+        published:true,
+        integration_id:'abc',
+        assignment_group_id: group_id
+      }
+    })
+
+    if response.kind_of? Net::HTTPSuccess
+      print "#{checkmark}"
+    else
+      failures << response
+      print "Failed to create assignment(s)."
+      puts "\n"
+    end
+
+    if failures.length > 0
+      puts "Failures encountered:"
+      failures.each { |resp|
+        puts "#{resp.code}: #{resp.message}"
+        puts "\n"
+        puts JSON.parse(resp.body)
+        puts "\n"
+        puts "---------------------"
+      }
+    else
+      puts "\n"
+      puts "Created #{count} asssignment(s) in course #{course_id}."
+      puts "\n"
+    end
+  end
+end
+
+def create_module(subdomain,course_id,count, prefix)
+  canvas_url = "https://#{subdomain}.instructure.com"
+
+  count.to_i.times do |i|
+    current_count = i + 1
+    modules = canvas_post("#{canvas_url}/api/v1/courses/#{course_id}/modules",
+      token, {
+        module: {
+          name: "#{prefix} #{current_count}",
+          position: current_count
+        }
+      }
+  )
+  end
+end
+
+def update_module(subdomain,course_id,id)
+  canvas_url = "https://#{subdomain}.instructure.com"
+    modules = canvas_put("#{canvas_url}/api/v1/courses/#{course_id}/modules/#{id}",
+      token, {
+        module: {
+          published: true
+        }
+      }
+  )
+end
+
+def get_course_obj_list(subdomain,course_id,object)
+  canvas_url = "https://#{subdomain}.instructure.com"
+  list = get_json_paginated(
+    token,
+    "https://#{subdomain}.instructure.com/api/v1/courses/#{course_id}/#{object}"
+  )
+end
+
+def create_module_item_type(subdomain,course_id,module_id,type,id,req,score)
+  canvas_url = "https://#{subdomain}.instructure.com"
+  response = canvas_post("#{canvas_url}/api/v1/courses/#{course_id}/modules/#{module_id}/items",
+    token, {
+      module_item: {
+        type:type,
+        content_id: id,
+        completion_requirement:{
+          type: req,
+          min_score: score
+        }
+      }
+    }
+  )
+end
+
 def grade_submission(token, canvas_url, course_id, assignment_id, user_id, grade)
   canvas_put("#{canvas_url}/api/v1/courses/#{course_id}/assignments/#{assignment_id}/submissions/#{user_id}", token, {
     submission: {
@@ -145,7 +258,7 @@ end
           unique_id: "#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}_login",
           password: "#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}_login",
           sis_user_id: "#{type}_#{state}_#{prefix}#{current_count}#{pseudonym}_sis",
-          send_confirmation: false,
+          send_confirmation: true,
           force_self_registration: false
         },
 
@@ -181,7 +294,7 @@ end
       failures.each { |resp|
       puts "\n"
       puts "#{resp.code}: #{resp.message}"
-      puts JSON.parse(response.body)
+      #puts JSON.parse(response.body)
       puts "---------------------"
       puts "\n"
       }
@@ -192,6 +305,17 @@ end
     end
 
     user_id
+  end
+
+  def create_custom_data(subdomain,user_id,namespace,data)
+    token = get_token
+    canvas_url = "https://#{subdomain}.instructure.com"
+
+    response = canvas_put("#{canvas_url}/api/v1/users/#{user_id}/custom_data?ns=#{namespace}", token,
+      {
+      data: data
+      }
+    )
   end
 
   def create_enrollment(subdomain, course_id, user_id, type, state, self_enroll)

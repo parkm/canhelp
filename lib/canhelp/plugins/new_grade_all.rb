@@ -32,7 +32,7 @@ module CanhelpPlugin
       assignments.each do |assignment|
         assignment_id = assignment['id']
         user_ids.each do |user_id|
-          score = rand(10) + 1
+          score = rand(10) + 5
           result = update_grades(token, canvas_url, course_id, assignment_id, user_id, score)
           puts "User #{user_id} grade for Assignment #{assignment_id}: #{score}"
         end
@@ -40,7 +40,7 @@ module CanhelpPlugin
 
     else
       user_ids.each do |user_id|
-        score = rand(10) + 1
+        score = rand(10) + 5
         result = update_grades(token, canvas_url, course_id, assignment_id, user_id, score)
         puts "User #{user_id} Grade for Assignment #{assignment_id}: #{score}"
       end
