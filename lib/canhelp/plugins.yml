@@ -33,11 +33,21 @@ create_assignments:
   name: 'Create Assignments'
   description: 'Create one or more assignments in a course.'
   args: ['subdomain', ['course_id', 'int'], ['count', 'int'], 'prefix']
+assignment_blast:
+  method: 'assignment_blast'
+  name: 'Assignment Blast'
+  description: 'Create one or more assignments with submission types other than online.'
+  args: ['subdomain', ['course_id', 'int'], ['count', 'int'], 'prefix']
+create_modules_and_module_items:
+  method: 'create_modules_and_module_items'
+  name: 'Create Modules and Mod Items'
+  description: 'Create one or more modules and module items in a course.'
+  args: ['subdomain', ['course_id', 'int'], ['count', 'int'], 'prefix', ['score', 'int']]
 create_courses:
   method: 'create_courses'
   name: 'Create Courses'
   description: 'Create one or more Canvas Courses'
-  args: ['subdomain', ['account_id', 'int'], 'term', ['count', 'int'], 'prefix']
+  args: ['subdomain', ['account_id', 'int'], 'term', ['count', 'int'], 'prefix','start_at','end_at','syllabus_body',['is_public','bool'],['is_public_to_auth_users','bool'],['public_syllabus','bool'],['public_syllabus_to_auth','bool']]
 create_sections:
   method: 'create_sections'
   name: 'Create Sections'
@@ -53,6 +63,16 @@ create_user_and_enrollments:
   name: 'Create Users and Enrollments'
   description: 'Create users and enroll them into a course.'
   args: ['subdomain', 'prefix', ['count', 'int'], ['course_id', 'int'], ['user_id', 'int'], 'type', 'state', ['self_enroll', 'bool']]
+enroll_automation_users:
+  method: 'enroll_automation_users'
+  name: 'Enroll Automation Users'
+  description: 'Enroll Automation Users by User ID'
+  args: ['subdomain', ['course_id', 'int'], ['teacher_id', 'int'], ['ta_id', 'int'], ['student_id', 'int'], ['observer_id', 'int'],['designer_id', 'int'], 'other_role', ['other_role_id', 'int'],['self_enroll', 'bool']]
+copy_course_enrollment:
+  method: 'copy_course_enrollment'
+  name: 'Copy Course Enrollment'
+  description: 'Copy course enrollment from course a to course b'
+  args: ['subdomain', ['course_id_a', 'int'], ['course_id_b', 'int'],['self_enroll', 'bool']]
 csv_enrollments:
   method: 'csv_enrollments'
   name: 'Create Users and Enrollments CSV'
@@ -72,7 +92,7 @@ enrollment_blast:
   method: 'enrollment_blast'
   name: 'Enrollment Blast'
   description: 'Create users and enrollments in each state.'
-  args: ['subdomain', 'prefix', ['teacher_count_per_state', 'int'], ['student_count_per_state', 'int'],['course_id', 'int']]
+  args: ['subdomain', 'prefix', ['teacher_count_per_state', 'int'], ['student_count_per_state', 'int'], ['observer_count_per_state', 'int'],['course_id', 'int']]
 enrollment_range:
   method: 'enrollment_range'
   name: 'Enrollment Range'
@@ -93,11 +113,21 @@ get_teacher_count:
   name: 'Teacher Count'
   description: 'See how many teachers are in a Canvas Account/Sub-account.'
   args: ['subdomain', ['account_id', 'int'], ['teacher_role_id', 'int']]
+get_student_login:
+  method: 'get_student_login'
+  name: 'List of Student Login'
+  description: 'See list of student login in a Canvas Account.'
+  args: ['subdomain', ['account_id', 'int'], ['student_role_id', 'int']]
 grade_all_users_in_course:
   method: 'grade_all_old'
   name: 'Grade all users in the course'
   description: 'Give a 1-10 assignment grade to all users in the course.'
   args: ['subdomain', ['course_id', 'int'],['assignment_id', 'int']]
+grade_all_users_in_account:
+  method: 'grade_all_sub'
+  name: 'Grade all users in the account'
+  description: 'Give a 1-10 assignment grade to all users in the course.'
+  args: ['subdomain',['subaccount_id', 'int']]
 # one_account_page_view:
 #   method: 'one_account_page_view'
 #   name: ''
@@ -113,3 +143,8 @@ favorite_course:
   name: 'Favorite Course'
   description: 'Add all course as a Favorite'
   args: ['subdomain', ['user_id', 'int'], ['state']]
+add_custom_data:
+  method: 'add_custom_data'
+  name: 'Add custom data'
+  description: 'Add custom data for all users in account.'
+  args: ['subdomain', ['account_id', 'int'], 'namespace', 'data']

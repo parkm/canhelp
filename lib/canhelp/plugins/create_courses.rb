@@ -9,7 +9,14 @@ module CanhelpPlugin
     account_id: prompt(),
     term: prompt(),
     count: prompt(),
-    prefix: prompt()
+    prefix: prompt(),
+    start_at: prompt(),
+    end_at: prompt(),
+    syllabus_body: prompt(),
+    is_public: prompt(),
+    is_public_to_auth_users: prompt(),
+    public_syllabus: prompt(),
+    public_syllabus_to_auth: prompt()
   )
     token = get_token
     current_count = 1
@@ -23,8 +30,15 @@ module CanhelpPlugin
         course: {
           name: "#{prefix} #{current_count}",
           course_code: "#{prefix} Course Code #{current_count}",
+          start_at: start_at,
+          end_at: end_at,
+          syllabus_body: syllabus_body,
           sis_course_id: course_sis_id.gsub(/\s+/, ""),
-          term_id: "#{term}"
+          term_id: "#{term}",
+          is_public: is_public,
+          is_public_to_auth_users: is_public_to_auth_users,
+          public_syllabus: public_syllabus,
+          public_syllabus_to_auth: public_syllabus_to_auth
         },
         offer: true, #publish or unpublish
         enroll_me: false
